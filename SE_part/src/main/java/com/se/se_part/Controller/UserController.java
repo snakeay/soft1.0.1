@@ -1,10 +1,13 @@
 package com.se.se_part.Controller;
 
+import com.se.se_part.Entity.Questionnaire;
 import com.se.se_part.Entity.User;
 import com.se.se_part.Utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.se.se_part.Service.UserService;
+
+import java.util.List;
 
 import static com.se.se_part.Main.userUid;
 
@@ -34,4 +37,20 @@ public class UserController {
         Result result = userService.register(user);
         return result;
     }
+
+    @PostMapping("/createForm")
+    public Result getgroupInfo(String token)
+    {
+
+        return null;
+    }
+
+    @PostMapping("/publish") //接口:publish 用于表示发布表单
+    public Result createNewForm(@RequestBody List<Questionnaire> questionnaires,@RequestBody String questionnaireTitle,@RequestBody String token,@RequestBody List<Long> targetGroupIds)
+    {
+
+        Result result = userService.createNewForm(questionnaires, questionnaireTitle,token,targetGroupIds);
+        return result;
+    }
+
 }

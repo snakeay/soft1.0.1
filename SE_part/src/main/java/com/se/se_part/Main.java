@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+@MapperScan("com.se.se_part.Dao")
 @SpringBootApplication
 public class Main {
     public static int userUid = 2;

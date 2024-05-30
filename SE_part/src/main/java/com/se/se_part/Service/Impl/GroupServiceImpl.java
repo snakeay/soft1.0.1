@@ -5,7 +5,9 @@ import com.se.se_part.Entity.Group;
 import com.se.se_part.Service.GroupService;
 import com.se.se_part.Utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class GroupServiceImpl implements GroupService {
     @Autowired
     private GroupRepository groupRepository;

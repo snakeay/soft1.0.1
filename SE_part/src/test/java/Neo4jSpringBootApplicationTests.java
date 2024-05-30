@@ -1,5 +1,9 @@
 import com.se.se_part.Controller.UserController;
+import com.se.se_part.Dao.GroupRepository;
 import com.se.se_part.Dao.UserRepository;
+import com.se.se_part.Entity.Group;
+import com.se.se_part.Entity.QuestionNode;
+import com.se.se_part.Entity.Questionnaire;
 import com.se.se_part.Entity.User;
 import com.se.se_part.Main;
 import com.se.se_part.Utils.Result;
@@ -10,16 +14,20 @@ import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.List;
 import java.util.Optional;
 @SpringBootTest(classes = Main.class)
 public class Neo4jSpringBootApplicationTests {
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
-    private UserController userController;
+    private GroupRepository groupRepository;
+
     @Test
     public void TestCreate()
     {
+        /*
         //TODO:测试login函数
         User user=new User();
         Result result = new Result();
@@ -28,14 +36,35 @@ public class Neo4jSpringBootApplicationTests {
         user.setPassword("user1123");
         result = userController.login(user);
         System.out.println(result.getCode());
+        */
 
         //TODO:测试id(n)
         //System.out.println(userRepository.FindByUserId());
 
-        //TODO:测试注册函数
+        /*
+        //TODO:测试通过用户id找到所属用户组
+        List<Group> groups = groupRepository.findBelongGroupByUserId(2L);
+        System.out.println(groups);
+        */
+
+        /*
+        //TODO:测试通过用户id找到所管理的组
+        List<Group> group = groupRepository.findAdministrateGroupByUserId(10L);
+        System.out.println(group);
+        */
+
+        /*
+        //TODO:测试创建问题节点函数
+        Long questionNode = userRepository.createQuestionNode(1,"问题1");
+        System.out.println(questionNode);
+//        Questionnaire newNode = userRepository.addNodeAttributes(6L,"Q3","问题3");
+//        System.out.println(newNode);
+         */
+
+        //TODO:测试创建表单函数
 
     }
-    @Test
+    /*@Test
     public void Taetregist()
     {
         User user =new User();
@@ -45,11 +74,6 @@ public class Neo4jSpringBootApplicationTests {
         user.setNickname("井盖搬运工");
         result = userController.register(user);
         System.out.println(result.getCode());
-    }
+    }*/
 
-    @Test
-    public void TestGroup()
-    {
-
-    }
 }

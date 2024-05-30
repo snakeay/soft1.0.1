@@ -45,8 +45,8 @@ public interface UserRepository extends Neo4jRepository<User,Long>
     void questionCoreToGroup(Long coreId, Long groupId);
 
     //TODO：创建问卷题目节点
-    @Query("create(n:QuestionNode{Q1:\"\",Q2:\"\",Q3:\"\",Q4:\"\",Q5:\"\",Q6:\"\",Q7:\"\",Q8:\"\",title:$questiontitle,type:$questiontype}) return id(n)")
-    Long createQuestionNode(Integer questiontype, String questiontitle);
+    @Query("create(n:QuestionNode{number:$number, Q1:\"\",Q2:\"\",Q3:\"\",Q4:\"\",Q5:\"\",Q6:\"\",Q7:\"\",Q8:\"\",title:$questiontitle,type:$questiontype}) return id(n)")
+    Long createQuestionNode(int number, Integer questiontype, String questiontitle);
 
     //TODO：将问题节点连接至问卷中心节点
     @Query("match(a:QuestionNode),(b:QuestionCore) where id(a)=$nodeId and id(b)=$coreId create (a)-[r:questionBelongsTo]->(b)")
@@ -73,5 +73,45 @@ public interface UserRepository extends Neo4jRepository<User,Long>
     void addNodeAttributesQ8(Long questionNodeId, String questioncontent);
     /*----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
+    //TODO:利用id找到问卷中心节点
+    @Query("match(n:Question) where id(n)=$questionnaireCoreId return n")
+    QuestionnaireCore getquestionnaireCore(Long questionnaireCoreId);
+
+    //TODO：创建问卷中心节点
+    @Query("create(answercore:AnswerCore{title:$title}) return questionnairecore")
+    AnswerCore createAnswerCore(String title);
+
+    //TODO:将答案中心节点连接至问题卷中心节点
+    @Query("match(a:AnswerCore),(b:QuestionCore) where id(a)=$answerCoreId and id(b)=$questionnairecoreid create (a)-[r:answersToquestion]->(b)")
+    void answerCoreToQuestionnaireCoreId(Long answerCoreId, Long questionnaireCoreId);
+
+    //TODO:创建答案节点
+    @Query("create(n:AnswerNode{number:$number, Q1:\"\",Q2:\"\",Q3:\"\",Q4:\"\",Q5:\"\",Q6:\"\",Q7:\"\",Q8:\"\"}) return id(n)")
+    Long createAnswerNode(int number);
+
+    //TODO：将问题节点连接至问卷中心节点
+    @Query("match(a:AnswerNode),(b:AnswerCore) where id(a)=$nodeId and id(b)=$coreId create (a)-[r:answerBelongsTo]->(b)")
+    void answerNodeToCore(Long nodeId,Long coreId);
+
+
+    /*---------------------------------------------------------------------以下函数是为了给问题节点填充属性-----------------------------------------------------------------------------*/
+    //TODO：答案作为节点属性，补充到问卷问题节点
+    @Query("match(n:AnswerNode) where id(n)=$answerNodeId set n.Q1 = $questioncontent")
+    void addNodeAttributesA1(Long answerNodeId, String questioncontent);
+    @Query("match(n:QuestionNode) where id(n)=$answerNodeId set n.Q2 = $questioncontent")
+    void addNodeAttributesA2(Long answerNodeId, String questioncontent);
+    @Query("match(n:QuestionNode) where id(n)=$answerNodeId set n.Q3 = $questioncontent")
+    void addNodeAttributesA3(Long answerNodeId, String questioncontent);
+    @Query("match(n:QuestionNode) where id(n)=$answerNodeId set n.Q4 = $questioncontent")
+    void addNodeAttributesA4(Long answerNodeId, String questioncontent);
+    @Query("match(n:QuestionNode) where id(n)=$answerNodeId set n.Q5 = $questioncontent")
+    void addNodeAttributesA5(Long answerNodeId, String questioncontent);
+    @Query("match(n:QuestionNode) where id(n)=$answerNodeId set n.Q6 = $questioncontent")
+    void addNodeAttributesA6(Long answerNodeId, String questioncontent);
+    @Query("match(n:QuestionNode) where id(n)=$answerNodeId set n.Q7 = $questioncontent")
+    void addNodeAttributesA7(Long answerNodeId, String questioncontent);
+    @Query("match(n:QuestionNode) where id(n)=$answerNodeId set n.Q8 = $questioncontent")
+    void addNodeAttributesA8(Long answerNodeId, String questioncontent);
+    /*----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 }

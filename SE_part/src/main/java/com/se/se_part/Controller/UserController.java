@@ -1,5 +1,6 @@
 package com.se.se_part.Controller;
 
+import com.se.se_part.Entity.Answers;
 import com.se.se_part.Entity.Questionnaire;
 import com.se.se_part.Entity.User;
 import com.se.se_part.Utils.Result;
@@ -38,12 +39,20 @@ public class UserController {
         return result;
     }
 
-    @PostMapping("/createForm")
-    public Result getgroupInfo(String token)
+    @PostMapping("/createFormFindGroupBelongsTo")
+    public Result getGroupBelongstoInfo(String token)
     {
-
-        return null;
+        Result result = userService.getGroupBelongstoInfo(token);
+        return result;
     }
+
+    @PostMapping("/createFormFindGroupAdministratedTo")
+    public Result createFormFindGroupAdministratedTo(String token)
+    {
+        Result result = userService.createFormFindGroupAdministratedTo(token);
+        return result;
+    }
+
 
     @PostMapping("/publish") //接口:publish 用于表示发布表单
     public Result createNewForm(@RequestBody List<Questionnaire> questionnaires,@RequestBody String questionnaireTitle,@RequestBody String token,@RequestBody List<Long> targetGroupIds)
@@ -52,5 +61,16 @@ public class UserController {
         Result result = userService.createNewForm(questionnaires, questionnaireTitle,token,targetGroupIds);
         return result;
     }
+
+    //@PostMapping("/getQuestionAnswers")
+    //public Result getQuestionAnswers()
+
+    @PostMapping("/SubmitAnswer") //用户答完题后提交答案
+    public Result submitAnswer(@RequestBody List<Answers> answers,@RequestBody Long questionnaireCoreId)
+    {
+        Result result = userService.createAnswerForm(answers,questionnaireCoreId);
+        return result;
+    }
+
 
 }

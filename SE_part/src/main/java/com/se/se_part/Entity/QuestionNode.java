@@ -14,6 +14,8 @@ public class QuestionNode
     @GeneratedValue
     private Long id;
     @Property
+    private int number;
+    @Property
     private String Q1;
     @Property
     private String Q2;

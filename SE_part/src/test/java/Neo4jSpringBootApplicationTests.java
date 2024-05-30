@@ -57,23 +57,21 @@ public class Neo4jSpringBootApplicationTests {
         //TODO:测试创建问题节点函数
         Long questionNode = userRepository.createQuestionNode(1,"问题1");
         System.out.println(questionNode);
-//        Questionnaire newNode = userRepository.addNodeAttributes(6L,"Q3","问题3");
-//        System.out.println(newNode);
+        Questionnaire newNode = userRepository.addNodeAttributes(6L,"Q3","问题3");
+        System.out.println(newNode);
          */
 
-        //TODO:测试创建表单函数
 
     }
-    /*@Test
+
+    /*
+    @Test
     public void Taetregist()
     {
-        User user =new User();
-        Result result= new Result();
-        user.setAccount("user100111");
-        user.setPassword("user1123");
-        user.setNickname("井盖搬运工");
-        result = userController.register(user);
-        System.out.println(result.getCode());
-    }*/
+        UserController usercontroller = new UserController();
+        Result result = usercontroller.getgroupInfo(2L);
+        System.out.println(result.getData());
+    }
+     */
 
 }

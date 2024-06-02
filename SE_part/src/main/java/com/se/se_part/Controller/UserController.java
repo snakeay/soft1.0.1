@@ -34,8 +34,22 @@ public class UserController {
     @PostMapping("/regist")
     public Result register(@RequestBody User user)
     {
-
         Result result = userService.register(user);
+        return result;
+    }
+
+    @PostMapping("/createForm")
+    public Result getgroupInfo(String token)
+    {
+
+        return null;
+    }
+
+    @PostMapping("/publish") //接口:publish 用于表示创建并发布表单
+    public Result createNewForm(@RequestBody List<Questionnaire> questionnaires,@RequestBody String questionnaireTitle,@RequestBody String token,@RequestBody List<Long> targetGroupIds)
+    {
+
+        Result result = userService.createNewForm(questionnaires, questionnaireTitle,token,targetGroupIds);
         return result;
     }
 
@@ -53,24 +67,10 @@ public class UserController {
         return result;
     }
 
-
-    @PostMapping("/publish") //接口:publish 用于表示发布表单
-    public Result createNewForm(@RequestBody List<Questionnaire> questionnaires,@RequestBody String questionnaireTitle,@RequestBody String token,@RequestBody List<Long> targetGroupIds)
-    {
-
-        Result result = userService.createNewForm(questionnaires, questionnaireTitle,token,targetGroupIds);
-        return result;
-    }
-
-    //@PostMapping("/getQuestionAnswers")
-    //public Result getQuestionAnswers()
-
     @PostMapping("/SubmitAnswer") //用户答完题后提交答案
-    public Result submitAnswer(@RequestBody List<Answers> answers,@RequestBody Long questionnaireCoreId)
+    public Result submitAnswer(@RequestBody List<Answers> answers, @RequestBody Long questionnaireCoreId,@RequestBody String token)
     {
-        Result result = userService.createAnswerForm(answers,questionnaireCoreId);
+        Result result = userService.createAnswerForm(answers,questionnaireCoreId,token);
         return result;
     }
-
-
 }

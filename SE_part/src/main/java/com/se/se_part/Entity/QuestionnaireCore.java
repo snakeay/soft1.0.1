@@ -15,5 +15,5 @@ public class QuestionnaireCore //数据库中问卷中心节点
     private Long id;
 
     @Property
-    private String questionnaireTitle;
+    private String title;
 }

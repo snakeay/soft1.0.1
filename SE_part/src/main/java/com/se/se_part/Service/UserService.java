@@ -29,20 +29,12 @@ public interface UserService  {
     * */
     Result createNewForm(List<Questionnaire> questionnaires, String questionnaireTitlem, String token, List<Long> targetGroupIds);
 
-    /*TODO:通过token找到用户id，再通过用户id找到用户所属于的组
-    * @author DWC
-    * date:2024/5/29*/
-    Result getGroupBelongstoInfo(String token);/*String token*/
+    /*TODO:通过token找到用户id，再通过用户id找到用户所属于的组*/
+    Result getGroupBelongstoInfo(String token);/*String token
 
-    /*TODO:通过token找到用户id，再通过用户id找到用户所管理的组
-     * @author DWC
-     * date:2024/5/29*/
+    /*TODO:通过token找到用户id，再通过用户id找到用户所管理的组*/
     Result createFormFindGroupAdministratedTo(String token);
 
-    /*TODO：创建答案卷
-     * @author DWC
-     * date:2024/5/29*/
-    Result createAnswerForm(List<Answers> answerList, Long questionnaireCoreId);
-
-
+    /*TODO：创建答案卷*/
+    Result createAnswerForm(List<Answers> answerList, Long questionnaireCoreId,String token);
 }

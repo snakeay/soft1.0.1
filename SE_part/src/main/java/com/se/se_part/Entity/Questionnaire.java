@@ -18,9 +18,7 @@ public class Questionnaire //数据库中的问题节点
     @GeneratedValue
     private Long id;
     @Property
-    private Integer qid;
-    @Property
-    private Integer type;
+    private Integer type; //type 012 -> 单选、多选、提问
     @Property
     private String questionTitle; //题头
     @Property

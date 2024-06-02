@@ -6,5 +6,11 @@ import org.springframework.stereotype.Service;
 
 
 public interface GroupService {
-    Result createGroup(Group group);
+    Result joinGroup(Long userId, Long groupId);
+
+    Result exitGroup(Long userId, Long groupId);
+
+    Result createGroup(Long userId, String groupName);
+
+    Result adminGroup(Long userId, Long groupId);
 }

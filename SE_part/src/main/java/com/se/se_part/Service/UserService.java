@@ -54,4 +54,6 @@ public interface UserService  {
     Result searchInfoByOneType(Long questionCoreId, String type);
 
     Result getCreatedFormTitleAndId(String token);
+
+    Result getUserInfo(String token);
 }

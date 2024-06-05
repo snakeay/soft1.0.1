@@ -18,21 +18,22 @@ public class GroupController {
     @Autowired
     private JwtHelper jwtHelper;
     @PostMapping("/createGroup")
-    public Result createGroup(String token,@RequestBody Group group) //group接受前端传来的groupName
+    public Result createGroup(@RequestHeader String token, @RequestParam String groupName) //group接受前端传来的groupName
     {
+        System.out.println("data:" + groupName);
         Result result= new Result();
         Long userId = jwtHelper.getUserId(token);
-        String groupName = group.getGroupName();
         result =groupService.createGroup(userId, groupName);
         return result;
     }
 
     @PostMapping("/joinGroup")
-    public Result joinGroup(String token,@RequestBody Group group) //token解析出当前用户，group接受前端传来的groupId
+    public Result joinGroup(@RequestHeader String token,@RequestParam Long groupId) //token解析出当前用户，group接受前端传来的groupId
     {
+        System.out.println("dataid:"+ groupId);
         Result result= new Result();
         Long userId = jwtHelper.getUserId(token);
-        Long groupId = group.getId();
+        System.out.println(userId);
         result =groupService.joinGroup(userId, groupId);
         return result;
     }
@@ -56,6 +57,4 @@ public class GroupController {
         result = groupService.adminGroup(userId,groupId);
         return result;
     }
-
-
 }

@@ -23,11 +23,9 @@ public class GroupServiceImpl implements GroupService {
         System.out.println("groupNew = " + groupNew);
         if(groupNew.getId() != null){
             Long groupId = groupNew.getId();
-            //将用户与其创建的用户组以管理关系相连
             groupRepository.ConnectUserToGroup(userId,groupId);
-            String token = jwtHelper.createToken(Long.valueOf(groupNew.getId()));
-            Map data=new HashMap();
-            data.put("token",token);
+            Map data=new HashMap<>();
+            data.put("groupId",groupId);
             return Result.ok(data);
         }
         return Result.fail(null);
@@ -39,11 +37,13 @@ public class GroupServiceImpl implements GroupService {
         return Result.ok(null);
     }
 
-
     @Override
     public Result joinGroup(Long userId,Long groupId) {
         groupRepository.JoinGroup(userId, groupId);
-        return Result.ok(null);
+        String groupName = groupRepository.FindByGroupId(groupId).getGroupName();
+        Map data=new HashMap();
+        data.put("groupName",groupName);
+        return Result.ok(data);
     }
 
     @Override
@@ -51,5 +51,4 @@ public class GroupServiceImpl implements GroupService {
         groupRepository.ExitGroup(userId,groupId);
         return Result.ok(null);
     }
-
 }

@@ -116,6 +116,13 @@ public class UserController {
         return result;
     }
 
+    @GetMapping("/getUserInfo")
+    public Result getUserInfo(@RequestHeader String token)
+    {
+        Result result=userService.getUserInfo(token);
+        return result;
+    }
+
 
 
 

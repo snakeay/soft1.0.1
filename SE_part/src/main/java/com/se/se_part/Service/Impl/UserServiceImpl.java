@@ -341,4 +341,19 @@ public class UserServiceImpl implements UserService {
         return Result.ok(data);
     }
 
+    @Override
+    public Result getUserInfo(String token) {
+        boolean expiration = jwtHelper.isExpiration(token);
+        System.out.println(expiration);
+        if (expiration) {
+            return Result.build(null,ResultCodeEnum.NOTLOGIN);
+        }
+        Long userId = jwtHelper.getUserId(token);
+        User user = userrepository.FindByUserId(userId);
+        user.setPassword("");
+        System.out.println(user);
+        Map data=new HashMap<>();
+        data.put("loginUser",user);
+        return Result.ok(data);
+    }
 }

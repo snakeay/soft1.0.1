@@ -122,4 +122,7 @@ public interface UserRepository extends Neo4jRepository<User,Long>
     @Query("match(a)-[r:finishForm]->(b) where id(b)=$answerCoreId return a.nickname")
     String getFillerNickname(Long answerCoreId);
 
+    //TODO：按照用户Id查找用户
+    @Query("match(n:User) where id(n)=$userId return n")
+    User FindByUserId(Long userId);
 }

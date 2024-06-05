@@ -163,13 +163,15 @@ public class Neo4jSpringBootApplicationTests {
 
 
 
-
+/*
         //TODO：测试加入一个用户组
         String token = jwtHelper.createToken(0L);
         Group group =new Group();
         group.setId(2L);
         Result result = groupController.joinGroup(token,group);
         System.out.println(result.getCode());
+
+ */
 
 
 

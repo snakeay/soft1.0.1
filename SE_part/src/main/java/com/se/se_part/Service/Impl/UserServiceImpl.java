@@ -1,8 +1,7 @@
 package com.se.se_part.Service.Impl;
 
 import com.alibaba.druid.util.StringUtils;
-import com.se.se_part.Dao.GroupRepository;
-import com.se.se_part.Dao.UserRepository;
+import com.se.se_part.Dao.*;
 import com.se.se_part.Entity.*;
 import com.se.se_part.Service.UserService;
 import com.se.se_part.Utils.JwtHelper;
@@ -11,6 +10,7 @@ import com.se.se_part.Utils.ResultCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +24,15 @@ public class UserServiceImpl implements UserService {
     private GroupRepository grouprepository;
     @Autowired
     private JwtHelper jwtHelper;
+    @Autowired
+    private QuestionnaireCoreRepository questionnairecorerepository;
+    @Autowired
+    private QuestionNodeRepository questionnoderepository;
+    @Autowired
+    private AnswerCoreRepository answercorerepository;
+    @Autowired
+    private AnswerNodeRepository answernoderepository;
+
     @Override
     public Result login(User user)
     {
@@ -63,8 +72,9 @@ public class UserServiceImpl implements UserService {
         Long questionnairecoreId = userrepository.createQuestionnaireCore(questionnaireTitle); //首先创建问卷中心节点
         System.out.println("+++++++++++0" + questionnairecoreId);
         Long userId = jwtHelper.getUserId(token); //获取用户的id
-        int gsum = targetGroupIds.size();
+        questionnairecorerepository.creatorToQuestionnaireCore(userId,questionnairecoreId); //通过用户id将问题卷创建者和问题卷中心节点连接在一起
 
+        int gsum = targetGroupIds.size();
         for(int i=0;i<gsum;i++) //将问卷中心节点连接至用户组节点上
         {
             userrepository.questionCoreToGroup(questionnairecoreId,targetGroupIds.get(i));
@@ -146,7 +156,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result createAnswerForm(List<Answers> answerList, Long questionnaireCoreId, String token)
+    public Result createAnswerForm(List<Answers> answerList, Long questionnaireCoreId, String token) //创建答案表单
     {
         Long userId = jwtHelper.getUserId(token); //找到用户id
         String title = userrepository.getquestionnaireCore(questionnaireCoreId); //首先找到答案卷对应的问题卷中心节点
@@ -175,6 +185,160 @@ public class UserServiceImpl implements UserService {
             }
         }
         return Result.ok(null);
+    }
+
+
+    @Override
+    public Result getAllFormIdAndTitle(String token) //获取所有表单的和标题
+    {
+        Long userId = jwtHelper.getUserId(token);
+        List<Group> groups = grouprepository.findBelongGroupByUserId(userId);
+        groups.addAll(grouprepository.findBelongGroupByUserId(userId)); //找到了用户所属于和所管理的所有的组
+        Map data = new HashMap<>();
+        for(int i=0;i<groups.size();i++)
+        {
+            Long groupId = groups.get(i).getId();
+            List<QuestionnaireCore> questionnaireCores = questionnairecorerepository.findQuestionnaireCore(groupId);
+            for(int j=0;j<questionnaireCores.size();j++)
+            {
+                data.put(questionnaireCores.get(j).getTitle(),questionnaireCores.get(j).getId());
+            }
+        }
+        return Result.ok(data);
+    }
+
+    @Override
+    public Result getWholeFormDetails(Long targetFormId)
+    {
+        List<QuestionNode> questionNodes = questionnoderepository.getQuestionNodeByCoreId(targetFormId); //通过问卷中心节点id找到整个问卷的所有题目
+        List<Questionnaire> questionnaires = new ArrayList<>(); //用于打包整道题的List
+
+        for(int i=0;i<questionNodes.size();i++)
+        {
+            Questionnaire questionnaire = new Questionnaire();
+            questionnaire.setType(questionNodes.get(i).getType()); //获取第i道题的type
+            questionnaire.setQuestionTitle(questionNodes.get(i).getTitle()); //获取第i道题的title
+
+            List<String> questionContents =new ArrayList<>(); //用于打包某道题的所有选项的List
+            if(questionNodes.get(i).getQ1() != null)
+            {
+                questionContents.add(questionNodes.get(i).getQ1());
+            }
+            if(questionNodes.get(i).getQ2() != null)
+            {
+                questionContents.add(questionNodes.get(i).getQ2());
+            }
+            if(questionNodes.get(i).getQ3() != null)
+            {
+                questionContents.add(questionNodes.get(i).getQ3());
+            }
+            if(questionNodes.get(i).getQ4() != null)
+            {
+                questionContents.add(questionNodes.get(i).getQ4());
+            }
+            if(questionNodes.get(i).getQ5() != null)
+            {
+                questionContents.add(questionNodes.get(i).getQ5());
+            }
+            if(questionNodes.get(i).getQ6() != null)
+            {
+                questionContents.add(questionNodes.get(i).getQ6());
+            }
+            if(questionNodes.get(i).getQ7() != null)
+            {
+                questionContents.add(questionNodes.get(i).getQ7());
+            }
+            if(questionNodes.get(i).getQ8() != null)
+            {
+                questionContents.add(questionNodes.get(i).getQ8());
+            }
+            questionnaire.setQuestionContent(questionContents); //获取第i道题的内容
+
+            questionnaires.add(questionnaire);
+        }
+        return Result.ok(questionnaires);
+    }
+
+    @Override
+    public Result getAnswerFormDetails(String token, Long questionCoreId)
+    {
+        Long userId = jwtHelper.getUserId(token); //获取用户id
+        Long answerCoreId = answercorerepository.getAnswerCore(userId, questionCoreId); //获取答案卷中心节点id
+        List<AnswerNode> answerNodes = answernoderepository.getAllAnswerNodesByCoreId(answerCoreId); //获取所有答案节点
+        List<Answers> answersList = new ArrayList<>(); //存每一道题答案的数组
+        for(int i=0;i<answerNodes.size();i++)
+        {
+            Answers answer = new Answers();
+            AnswerNode answerNode = answernoderepository.getAllAnswerNodesByCoreIdAndNumber(answerCoreId,i+1); //获取序号为i+1的题目答案
+            List<String> answerInAnswerNode = new ArrayList<>();
+            if(answerNode.getQ1() != null) answerInAnswerNode.add(answerNode.getQ1());
+            if(answerNode.getQ2() != null) answerInAnswerNode.add(answerNode.getQ2());
+            if(answerNode.getQ3() != null) answerInAnswerNode.add(answerNode.getQ3());
+            if(answerNode.getQ4() != null) answerInAnswerNode.add(answerNode.getQ4());
+            if(answerNode.getQ5() != null) answerInAnswerNode.add(answerNode.getQ5());
+            if(answerNode.getQ6() != null) answerInAnswerNode.add(answerNode.getQ6());
+            if(answerNode.getQ7() != null) answerInAnswerNode.add(answerNode.getQ7());
+            if(answerNode.getQ8() != null) answerInAnswerNode.add(answerNode.getQ8());
+            answer.setAnswer(answerInAnswerNode);
+            answersList.add(answer);
+        }
+        return Result.ok(answersList);
+    }
+
+    @Override
+    public Result getAllAnswerFormIdAndFiller(String token, Long questionCoreId)
+    {
+        Long userId = jwtHelper.getUserId(token);
+        Map data = new HashMap(); //key:填写者nickname，value:答案卷中心节点id
+        List<AnswerCore> answerCoresOfOneQueCore = answercorerepository.getAllAnswerCoreByQueCoreId(questionCoreId); //找到指定问题卷的所有答案中心节点
+        for(int i=0;i<answerCoresOfOneQueCore.size();i++)
+        {
+            String userNickname = userrepository.getFillerNickname(answerCoresOfOneQueCore.get(i).getId());
+            data.put(userNickname,answerCoresOfOneQueCore.get(i).getId());
+        }
+        return Result.ok(data);
+    }
+
+    @Override
+    public Result searchInfoByOneType(Long questionCoreId, String type)
+    {
+        Map data = new HashMap();
+        List<AnswerCore> answerCores = answercorerepository.getAllAnswerCoreByQueCoreId(questionCoreId);
+        int answerCoreNumber = questionnoderepository.getNumberByTitle(questionCoreId,type);
+        for(int i=0;i<answerCores.size();i++)
+        {
+            Long answerCoreId = answerCores.get(i).getId();
+            Answers answer = new Answers();
+            String userNickname = userrepository.getFillerNickname(answerCoreId);
+            AnswerNode answerNode = answernoderepository.getAnswerNodeByNumber(answerCoreId, answerCoreNumber);
+            List<String> answerInAnswerNode = new ArrayList<>();
+            if(answerNode.getQ1() != null) answerInAnswerNode.add(answerNode.getQ1());
+            if(answerNode.getQ2() != null) answerInAnswerNode.add(answerNode.getQ2());
+            if(answerNode.getQ3() != null) answerInAnswerNode.add(answerNode.getQ3());
+            if(answerNode.getQ4() != null) answerInAnswerNode.add(answerNode.getQ4());
+            if(answerNode.getQ5() != null) answerInAnswerNode.add(answerNode.getQ5());
+            if(answerNode.getQ6() != null) answerInAnswerNode.add(answerNode.getQ6());
+            if(answerNode.getQ7() != null) answerInAnswerNode.add(answerNode.getQ7());
+            if(answerNode.getQ8() != null) answerInAnswerNode.add(answerNode.getQ8());
+            answer.setAnswer(answerInAnswerNode);
+            data.put(userNickname, answer);
+        }
+        System.out.println(data);
+
+        return null;
+    }
+
+    @Override
+    public Result getCreatedFormTitleAndId(String token)
+    {
+        Long userId = jwtHelper.getUserId(token);
+        List<QuestionnaireCore> questionnaireCores = questionnairecorerepository.getAllCreatedQuestionnaireCore(userId);
+        Map data = new HashMap<>();
+        for(int i=0;i<questionnaireCores.size();i++)
+        {
+            data.put(questionnaireCores.get(i).getTitle(),questionnaireCores.get(i).getId());
+        }
+        return Result.ok(data);
     }
 
 }

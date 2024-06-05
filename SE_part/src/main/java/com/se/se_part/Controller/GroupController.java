@@ -56,4 +56,6 @@ public class GroupController {
         result = groupService.adminGroup(userId,groupId);
         return result;
     }
+
+
 }

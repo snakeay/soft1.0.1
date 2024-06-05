@@ -1,5 +1,6 @@
 import com.se.se_part.Controller.GroupController;
 import com.se.se_part.Controller.UserController;
+import com.se.se_part.Dao.AnswerCoreRepository;
 import com.se.se_part.Dao.GroupRepository;
 import com.se.se_part.Dao.UserRepository;
 import com.se.se_part.Entity.*;
@@ -75,15 +76,13 @@ public class Neo4jSpringBootApplicationTests {
         System.out.println(group);
         */
 
-
-
         /*
         //TODO:测试创建表单函数
         List<Questionnaire> list1 = new ArrayList<>();
         List<String> list2 = new ArrayList<>();
         List<String> list3 = new ArrayList<>();
-        List<Long> list4 = Arrays.asList(2L);
-        String token = jwtHelper.createToken(1L);
+        List<Long> list4 = Arrays.asList(3L);
+        String token = jwtHelper.createToken(2L);
         Questionnaire Q1=new Questionnaire();
         Questionnaire Q2=new Questionnaire();
         Questionnaire Q3=new Questionnaire();
@@ -116,10 +115,10 @@ public class Neo4jSpringBootApplicationTests {
          */
 
 
-
+        /*
         //TODO:测试填写表单函数
         String token = jwtHelper.createToken(0L);
-        Long questionFormId = 3L;
+        Long questionFormId = 8L;
         List<Answers> answers = new ArrayList<>();
         Answers answers1 = new Answers();
         Answers answers2 = new Answers();
@@ -134,6 +133,17 @@ public class Neo4jSpringBootApplicationTests {
         answers.add(answers2);
         answers.add(answers3);
         Result result = userController.submitAnswer(answers,questionFormId,token);
+
+         */
+
+
+        /*
+        //TODO:测试找到用户所有相关的问卷中心节点的标题和id
+        String token = jwtHelper.createToken(0L);
+        Result result = userController.getAllFormsIdAndTitle(token);
+        System.out.println(result.getData());
+         */
+
 
     }
 
@@ -193,5 +203,110 @@ public class Neo4jSpringBootApplicationTests {
         String token = "";
         System.out.println("token =" + jwtHelper.getUserId(token));
     }
+
+    @Test
+    public void testPostQuestionnaire()
+    {
+        Result result = userController.getFormDetails(8L);
+        System.out.println(result.getData());
+    }
+
+    @Test
+    public void testGetAnswer()
+    {
+        String token = jwtHelper.createToken(0L);
+        Long questionFormId = 8L;
+        AnswerCoreRepository answercorerepository;
+        //AnswerCore answerCore = answercorerepository.getAnswerCore(0L, questionFormId);
+        Result result = userController.getAnswerFormDetails(token,questionFormId);
+        System.out.println(result.getData());
+        //System.out.println(answerCore);
+    }
+
+    @Test
+    public void testCreateQuestionnaire()
+    {
+        //TODO:测试创建表单函数
+        List<Questionnaire> list1 = new ArrayList<>();
+        List<String> list2 = new ArrayList<>();
+        List<String> list3 = new ArrayList<>();
+        List<Long> list4 = Arrays.asList(7L);
+        String token = jwtHelper.createToken(10L);
+        Questionnaire Q1=new Questionnaire();
+        Questionnaire Q2=new Questionnaire();
+        Questionnaire Q3=new Questionnaire();
+        Q1.setType(0);
+        Q2.setType(1);
+        Q3.setType(2);
+        Q1.setQuestionTitle("单项选择题：");
+        Q2.setQuestionTitle("多项选择题：");
+        Q3.setQuestionTitle("填空题：");
+        list2.add("选项A的内容");
+        list2.add("选项B的内容");
+        list2.add("选项C的内容");
+        list2.add("选项D的内容");
+        list3.add("多选题选项A的内容");
+        list3.add("多选题选项B的内容");
+        list3.add("多选题选项C的内容");
+        list3.add("多选题选项D的内容");
+        list3.add("多选题选项E的内容");
+        list3.add("多选题选项F的内容");
+        list3.add("多选题选项G的内容");
+        Q1.setQuestionContent(list2);
+        Q2.setQuestionContent(list3);
+        Q3.setQuestionContent(null);
+        list1.add(Q1);
+        list1.add(Q2);
+        list1.add(Q3);
+        Result result = userController.createNewForm(list1,"第四次表单测试",token,list4);
+        System.out.println(result.getCode());
+    }
+
+    @Test
+    public void testFinishQuestionnaire()
+    {
+        //TODO:测试填写表单函数
+        String token = jwtHelper.createToken(2L);
+        Long questionFormId = 18L;
+        List<Answers> answers = new ArrayList<>();
+        Answers answers1 = new Answers();
+        Answers answers2 = new Answers();
+        Answers answers3 = new Answers();
+        List<String> list1 = Arrays.asList("选项a");
+        List<String> list2 = Arrays.asList("选项a","选项b");
+        List<String> list3 = Arrays.asList("填空题");
+        answers1.setAnswer(list1);
+        answers2.setAnswer(list2);
+        answers3.setAnswer(list3);
+        answers.add(answers1);
+        answers.add(answers2);
+        answers.add(answers3);
+        Result result = userController.submitAnswer(answers,questionFormId,token);
+    }
+
+    @Test
+    public void testGetAllAnswerFormIdAndFiller()
+    {
+        String token = jwtHelper.createToken(10L);
+        Result result = userController.getAllAnswerFormIdAndFiller(token,8L);
+        //System.out.println(result.getData());
+    }
+
+    @Test
+    public void testsearchInfoByOneType()
+    {
+        Result result = userController.searchInfoByOneType(8L,"多项选择题：");
+
+    }
+
+    @Test
+    public void testgetCreatedFormTitleAndId()
+    {
+        String token = jwtHelper.createToken(10L);
+        Result result = userController.getCreatedFormTitleAndId(token);
+        System.out.println(result.getData());
+    }
+
+
 
 }

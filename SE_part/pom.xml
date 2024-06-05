@@ -120,7 +120,7 @@
             <version>2.3.0</version>
         </dependency>
         <dependency>
-            <groupId>or..m2.repository.org.scala-lang</groupId>
+            <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <version>2.11.12</version>
         </dependency>

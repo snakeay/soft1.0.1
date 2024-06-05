@@ -13,4 +13,5 @@ public interface GroupService {
     Result createGroup(Long userId, String groupName);
 
     Result adminGroup(Long userId, Long groupId);
+
 }

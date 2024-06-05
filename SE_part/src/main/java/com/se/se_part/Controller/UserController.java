@@ -73,4 +73,50 @@ public class UserController {
         Result result = userService.createAnswerForm(answers,questionnaireCoreId,token);
         return result;
     }
+
+    @PostMapping("/getAllFormIdAndTitle") //获取所有和用户相关的表单，包括其创建的和需要填写的
+    public Result getAllFormsIdAndTitle(@RequestBody String token)
+    {
+        Result result = userService.getAllFormIdAndTitle(token);
+        return result;
+    }
+
+    @PostMapping("/getWholeFormDetails") //获取某一个指定的问题卷的所有内容
+    public Result getFormDetails(@RequestBody Long targetFormId)
+    {
+        Result result = userService.getWholeFormDetails(targetFormId);
+        return result;
+    }
+
+    @PostMapping("/getAllAnswerFormIdAndFiller") //用户查询其所创建的某一个问卷的所有答案卷
+    public Result getAllAnswerFormIdAndFiller(@RequestBody String token, @RequestBody Long questionCoreId)
+    {
+        Result result = userService.getAllAnswerFormIdAndFiller(token,questionCoreId);
+        return result;
+    }
+
+    @PostMapping("/getAnswerFormDetails")
+    public Result getAnswerFormDetails(@RequestBody String token, @RequestBody Long questionCoreId)
+    {
+        Result result = userService.getAnswerFormDetails(token,questionCoreId);
+        return result;
+    }
+
+    @PostMapping("/searchInfoByOneType") //用户查看某一张问卷中的某一道题(输入title)的作答情况
+    public Result searchInfoByOneType(@RequestBody Long questionCoreId, @RequestBody String type)
+    {
+        Result result = userService.searchInfoByOneType(questionCoreId,type);
+        return result;
+    }
+
+    @PostMapping("/searchFormCreated")
+    public Result getCreatedFormTitleAndId(@RequestBody String token)
+    {
+        Result result = userService.getCreatedFormTitleAndId(token);
+        return result;
+    }
+
+
+
+
 }

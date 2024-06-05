@@ -39,6 +39,7 @@ public class GroupServiceImpl implements GroupService {
         return Result.ok(null);
     }
 
+
     @Override
     public Result joinGroup(Long userId,Long groupId) {
         groupRepository.JoinGroup(userId, groupId);
@@ -50,4 +51,5 @@ public class GroupServiceImpl implements GroupService {
         groupRepository.ExitGroup(userId,groupId);
         return Result.ok(null);
     }
+
 }

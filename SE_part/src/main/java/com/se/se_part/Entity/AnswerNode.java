@@ -18,5 +18,20 @@ public class AnswerNode
     @Property
     private int number;
     @Property
-    private List<String> answers;
+    private String Q1;
+    @Property
+    private String Q2;
+    @Property
+    private String Q3;
+    @Property
+    private String Q4;
+    @Property
+    private String Q5;
+    @Property
+    private String Q6;
+    @Property
+    private String Q7;
+    @Property
+    private String Q8;
+
 }

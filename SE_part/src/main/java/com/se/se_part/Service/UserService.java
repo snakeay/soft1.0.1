@@ -37,4 +37,21 @@ public interface UserService  {
 
     /*TODO：创建答案卷*/
     Result createAnswerForm(List<Answers> answerList, Long questionnaireCoreId,String token);
+
+
+    /*TODO:向前端返回所有与用户有关的问卷标题和id*/
+    Result getAllFormIdAndTitle(String token);
+
+    /*TODO:向前端返回一个问卷的具体内容*/
+    Result getWholeFormDetails(Long targetFormId);
+
+    /*TODO:向前端返回一个答案卷的具体内容(用户查看自己填写的答案卷)*/
+    Result getAnswerFormDetails(String token, Long questionCoreId);
+
+    /*TODO：向前端返回所有答案卷（问卷创建者查看所有填写情况）*/
+    Result getAllAnswerFormIdAndFiller(String token, Long questionCoreId);
+
+    Result searchInfoByOneType(Long questionCoreId, String type);
+
+    Result getCreatedFormTitleAndId(String token);
 }

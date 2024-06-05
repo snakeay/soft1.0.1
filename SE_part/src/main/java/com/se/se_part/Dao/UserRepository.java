@@ -118,5 +118,8 @@ public interface UserRepository extends Neo4jRepository<User,Long>
     void addNodeAttributesA8(Long answerNodeId, String questioncontent);
     /*----------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
+    //通过答案卷中心节点id找到用户（填写者）
+    @Query("match(a)-[r:finishForm]->(b) where id(b)=$answerCoreId return a.nickname")
+    String getFillerNickname(Long answerCoreId);
 
 }

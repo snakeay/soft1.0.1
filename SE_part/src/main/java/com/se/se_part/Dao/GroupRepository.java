@@ -1,6 +1,7 @@
 package com.se.se_part.Dao;
 
 import com.se.se_part.Entity.Group;
+import com.se.se_part.Entity.QuestionnaireCore;
 import com.se.se_part.Entity.User;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
@@ -37,4 +38,6 @@ public interface GroupRepository extends Neo4jRepository<Group,Long> {
     //通过用户id找到用户所创建的组
     @Query("match (a)-[r:userAdministrate]->(b) where id(a)=$userId return ENDNODE(r)")
     List<Group> findAdministrateGroupByUserId(Long userId);
+
+
 }

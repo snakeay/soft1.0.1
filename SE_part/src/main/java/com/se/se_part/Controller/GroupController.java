@@ -39,7 +39,7 @@ public class GroupController {
     }
 
     @PostMapping("/exitGroup")
-    public Result exitGroup(String token,@RequestBody Group group)
+    public Result exitGroup(@RequestHeader String token,@RequestBody Group group)
     {
         Result result= new Result();
         Long userId = jwtHelper.getUserId(token);

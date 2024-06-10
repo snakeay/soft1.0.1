@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @PostMapping("/publish") //接口:publish 用于表示创建并发布表单
-    public Result createNewForm(@RequestBody List<Questionnaire> questionnaires,@RequestBody String questionnaireTitle,@RequestBody String token,@RequestBody List<Long> targetGroupIds)
+    public Result createNewForm(@RequestBody List<Questionnaire> questionnaires,@RequestParam String questionnaireTitle,@RequestHeader String token,@RequestParam List<Long> targetGroupIds)
     {
 
         Result result = userService.createNewForm(questionnaires, questionnaireTitle,token,targetGroupIds);
@@ -54,21 +54,21 @@ public class UserController {
     }
 
     @PostMapping("/createFormFindGroupBelongsTo")
-    public Result getGroupBelongstoInfo(String token)
+    public Result getGroupBelongstoInfo(@RequestHeader String token)
     {
         Result result = userService.getGroupBelongstoInfo(token);
         return result;
     }
 
     @PostMapping("/createFormFindGroupAdministratedTo")
-    public Result createFormFindGroupAdministratedTo(String token)
+    public Result createFormFindGroupAdministratedTo(@RequestHeader String token)
     {
         Result result = userService.createFormFindGroupAdministratedTo(token);
         return result;
     }
 
     @PostMapping("/SubmitAnswer") //用户答完题后提交答案
-    public Result submitAnswer(@RequestBody List<Answers> answers, @RequestBody Long questionnaireCoreId,@RequestBody String token)
+    public Result submitAnswer(@RequestBody List<Answers> answers, @RequestParam Long questionnaireCoreId,@RequestHeader String token)
     {
         Result result = userService.createAnswerForm(answers,questionnaireCoreId,token);
         return result;

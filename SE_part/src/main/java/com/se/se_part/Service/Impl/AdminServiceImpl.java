@@ -30,13 +30,7 @@ public class AdminServiceImpl implements AdminService
     public Result getAllUsers()
     {
         List<User> allUsers = userRepository.adminGetAllUsers();
-        Map<String,Long> data = new HashMap<String,Long>();
-        for(int i=0; i<allUsers.size(); i++)
-        {
-            data.put(allUsers.get(i).getNickname(),allUsers.get(i).getId()); //nickname和id
-        }
-
-        return Result.ok(data);
+        return Result.ok(allUsers);
     }
 
     @Override
@@ -53,13 +47,7 @@ public class AdminServiceImpl implements AdminService
     public Result getAllGroups()
     {
         List<Group> groups = groupRepository.adminGetAllGroups();
-        Map<String,Long> data = new HashMap<String,Long>();
-        for(int i=0; i<groups.size(); i++)
-        {
-            data.put(groups.get(i).getGroupName(),groups.get(i).getId()); //nickname和id
-        }
-
-        return Result.ok(data);
+        return Result.ok(groups);
     }
 
     @Override

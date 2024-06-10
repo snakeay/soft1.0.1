@@ -161,7 +161,7 @@ public class UserServiceImpl implements UserService {
         Long userId = jwtHelper.getUserId(token); //找到用户id
         String title = userrepository.getquestionnaireCore(questionnaireCoreId); //首先找到答案卷对应的问题卷中心节点
         Long answerCoreId = userrepository.createAnswerCore(title); //创建答案卷中心节点
-        System.out.println("+++++++++++++++"+title);
+        //System.out.println("+++++++++++++++"+title);
         userrepository.answerCoreToQuestionnaireCoreId(answerCoreId,questionnaireCoreId);//将答案卷中心节点连接到问题卷中心节点
         userrepository.usertoAnswerCore(userId,answerCoreId);
         for(int i=0;i< answerList.size();i++)

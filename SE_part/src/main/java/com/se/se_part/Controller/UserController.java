@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @PostMapping("/publish") //接口:publish 用于表示创建并发布表单
-    public Result createNewForm(@RequestBody List<Questionnaire> questionnaires,@RequestParam String questionnaireTitle,@RequestHeader String token,@RequestParam List<Long> targetGroupIds)
+    public Result createNewForm(@RequestBody List<Questionnaire> questionnaires,@RequestParam("questionnaireTitle") String questionnaireTitle,@RequestHeader String token,@RequestParam("targetGroupIds[]") List<Long> targetGroupIds)
     {
 
         Result result = userService.createNewForm(questionnaires, questionnaireTitle,token,targetGroupIds);

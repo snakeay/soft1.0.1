@@ -1,8 +1,6 @@
 package com.se.se_part.Service;
 
-import com.se.se_part.Entity.Group;
 import com.se.se_part.Utils.Result;
-import org.springframework.stereotype.Service;
 
 
 public interface GroupService {
@@ -14,4 +12,11 @@ public interface GroupService {
 
     Result adminGroup(Long userId, Long groupId);
 
+    Result findGroupCreated(Long userId);
+
+    Result findGroupJoined(Long userId);
+
+    Result displayMemberOfGroup(Long groupId);
+
+    Result deleteGroup(Long groupId);
 }

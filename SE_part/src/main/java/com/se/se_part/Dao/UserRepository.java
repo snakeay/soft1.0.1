@@ -143,4 +143,11 @@ public interface UserRepository extends Neo4jRepository<User,Long>
     //TODO：通过组id找到组创建者
     @Query("match(a)-[r:userAdministrate]->(b) where id(b)=$groupId return a")
     User getadminInGroup(Long groupId);
+
+    /*-----------------------------------------TODO:组管理所用-------------------------------------------------------------------------------------------------------*/
+    @Query("match (a)-[rel:userBelongsTo]->(b) where id(b) = $groupId return startnode(rel)")
+    List<User> findMembersJoinGroup(Long groupId);
+
+    @Query("match (a)-[rel:userAdministrate]->(b) where id(b) = $groupId return startnode(rel)")
+    User findUserCreatedByGroupId(Long groupId);
 }

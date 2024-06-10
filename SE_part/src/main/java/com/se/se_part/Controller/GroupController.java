@@ -1,11 +1,8 @@
 package com.se.se_part.Controller;
 
-import com.se.se_part.Entity.Group;
-import com.se.se_part.Entity.User;
 import com.se.se_part.Service.GroupService;
 import com.se.se_part.Utils.JwtHelper;
 import com.se.se_part.Utils.Result;
-import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,22 +36,55 @@ public class GroupController {
     }
 
     @PostMapping("/exitGroup")
-    public Result exitGroup(@RequestHeader String token,@RequestBody Group group)
+    public Result exitGroup(@RequestHeader String token,@RequestParam Long groupId)
     {
         Result result= new Result();
         Long userId = jwtHelper.getUserId(token);
-        Long groupId = group.getId();
         result = groupService.exitGroup(userId,groupId);
         return result;
     }
 
     @PostMapping("/administrateGroup")
-    public Result administrateGroup(@RequestBody Group group, @RequestBody User user)
+    public Result administrateGroup(@RequestParam Long groupId, @RequestParam Long userId)
     {
         Result result= new Result();
-        Long groupId = group.getId();
-        Long userId = user.getId();
         result = groupService.adminGroup(userId,groupId);
         return result;
     }
+
+    @PostMapping("/findGroupCreated")
+    public Result findGroupCreated(@RequestHeader String token)
+    {
+        Result result = new Result();
+        Long userId = jwtHelper.getUserId(token);
+        result = groupService.findGroupCreated(userId);
+        return result;
+    }
+
+    @PostMapping("/findGroupJoined")
+    public Result findGroupJoined(@RequestHeader String token)
+    {
+        Result result = new Result();
+        Long userId = jwtHelper.getUserId(token);
+        result = groupService.findGroupJoined(userId);
+        return result;
+    }
+
+    @PostMapping("/displayMemberOfGroup")
+    public Result displayMemberOfGroup(@RequestParam Long groupId)
+    {
+        Result result = new Result();
+        result = groupService.displayMemberOfGroup(groupId);
+        return result;
+    }
+
+    @PostMapping("/deleteGroup")
+    public Result deleteGroup(@RequestParam Long groupId)
+    {
+        Result result = new Result();
+        result = groupService.deleteGroup(groupId);
+        return result;
+    }
+
+
 }

@@ -1,7 +1,6 @@
 package com.se.se_part.Dao;
 
 import com.se.se_part.Entity.Group;
-import com.se.se_part.Entity.User;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Component;
@@ -38,11 +37,19 @@ public interface GroupRepository extends Neo4jRepository<Group,Long> {
     @Query("match (a)-[r:userAdministrate]->(b) where id(a)=$userId return ENDNODE(r)")
     List<Group> findAdministrateGroupByUserId(Long userId);
 
+    @Query("match (a)-[rel:userAdministrate]->(b) where id(a) = $userId return endnode(rel)")
+    List<Group> findGroupCreatedById(Long userId);
+
+    @Query("match (a)-[rel:userBelongsTo]->(b) where id(a) = $userId return endnode(rel)")
+    List<Group> findGroupJoineddById(Long userId);
+
+    @Query("match (a)-[rel:userBelongsTo]->(b) where id(a)=$userId and id(b)=$groupId return b")
+    Group findIsUserBelongstoGroup(Long userId, Long groupId);
+
+    @Query("match (n:Group) where id(n) = $groupId detach delete n")
+    void deleteGroup(Long groupId);
+
     /*管理员所需组功能函数*/
     @Query("match(n:Group) return n")
     List<Group> adminGetAllGroups();
-
-    //管理员通过组id删除用户组
-    @Query("match(n:Group) where id(n)=$groupId detach delete n")
-    void deleteGroup(Long groupId);
 }

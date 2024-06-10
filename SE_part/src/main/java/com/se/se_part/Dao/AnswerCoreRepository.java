@@ -17,7 +17,15 @@ public interface AnswerCoreRepository extends Neo4jRepository<AnswerCore,Long>
     @Query("MATCH (a)-[r:finishForm]->(answercore)-[rr:answersToquestion]->(b) where id(a)=$userId and id(b)=$questionnaireCoreId return id(answercore)")
     Long getAnswerCore(Long userId, Long questionnaireCoreId);
 
+    //通过用户id找到答案卷中心节点
+    @Query("MATCH(a)-[r:finishForm]->(b) WHERE id(a)=$userId RETURN b")
+    List<AnswerCore> getAnswerCoreByUserId(Long userId);
+
     //通过问题卷中心节点id找到用户创建的某个指定问卷的所有答案卷中心节点
     @Query("match(a)-[r:answersToquestion]->(b) where id(b)=$questionnaireCoreId return STARTNODE(r)")
     List<AnswerCore> getAllAnswerCoreByQueCoreId(Long questionnaireCoreId);
+
+    //通过问题卷中心节点id和finishForm、answersToquestion关系找到答案卷中心节点
+    @Query("match(a)-[r:finishForm]->(b),(b)-[rr:answersToquestion]->(c) where id(c)=$questionCoreId and id(a)=$userId return b")
+    AnswerCore getAnswerCoreByRelationsAndQueId(Long userId, Long questionCoreId);
 }

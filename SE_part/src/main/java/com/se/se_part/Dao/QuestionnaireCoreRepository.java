@@ -25,4 +25,17 @@ public interface QuestionnaireCoreRepository extends Neo4jRepository<Questionnai
     @Query("match(a)-[r:userCreateForm]->(b) where id(a)=$userId return b ")
     List<QuestionnaireCore> getAllCreatedQuestionnaireCore(Long userId);
 
+    //通过用户id找到和用户有关的所有问题卷中心节点
+    @Query("MATCH(a)-[r:userBelongsTo]->(b),(c)-[rr:questionFormBelongsTo]->(b) WHERE id(a)=$userId RETURN c")
+    List<QuestionnaireCore> getALLQuestionnaireCoreRelated(Long userId);
+
+    //通过答案卷中心节点找到对应的问题卷中心节点，返回问题卷中心节点id
+    @Query("match(a)-[r:answersToquestion]->(b) where id(a)=$ansId return id(b)")
+    Long getQueCoreIdByAnsId(Long ansId);
+
+    //管理员得到所有问卷中心节点
+    @Query("match(n:QuestionnaireCore) return n")
+    List<QuestionnaireCore> adminGetAllQuesionnaires();
+
+
 }

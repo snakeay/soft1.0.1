@@ -1,3 +1,4 @@
+import com.se.se_part.Controller.AdminController;
 import com.se.se_part.Controller.GroupController;
 import com.se.se_part.Controller.UserController;
 import com.se.se_part.Dao.AnswerCoreRepository;
@@ -30,6 +31,8 @@ public class Neo4jSpringBootApplicationTests {
     private GroupRepository groupRepository;
     @Autowired
     private GroupController groupController;
+    @Autowired
+    private AdminController adminController;
     @Autowired
     private JwtHelper jwtHelper;
 
@@ -232,8 +235,8 @@ public class Neo4jSpringBootApplicationTests {
         List<Questionnaire> list1 = new ArrayList<>();
         List<String> list2 = new ArrayList<>();
         List<String> list3 = new ArrayList<>();
-        List<Long> list4 = Arrays.asList(7L);
-        String token = jwtHelper.createToken(10L);
+        List<Long> list4 = Arrays.asList(3L);
+        String token = jwtHelper.createToken(0L);
         Questionnaire Q1=new Questionnaire();
         Questionnaire Q2=new Questionnaire();
         Questionnaire Q3=new Questionnaire();
@@ -260,7 +263,7 @@ public class Neo4jSpringBootApplicationTests {
         list1.add(Q1);
         list1.add(Q2);
         list1.add(Q3);
-        Result result = userController.createNewForm(list1,"第四次表单测试",token,list4);
+        Result result = userController.createNewForm(list1,"第六次表单测试",token,list4);
         System.out.println(result.getCode());
     }
 
@@ -268,8 +271,8 @@ public class Neo4jSpringBootApplicationTests {
     public void testFinishQuestionnaire()
     {
         //TODO:测试填写表单函数
-        String token = jwtHelper.createToken(2L);
-        Long questionFormId = 18L;
+        String token = jwtHelper.createToken(29L);
+        Long questionFormId = 25L;
         List<Answers> answers = new ArrayList<>();
         Answers answers1 = new Answers();
         Answers answers2 = new Answers();
@@ -290,7 +293,7 @@ public class Neo4jSpringBootApplicationTests {
     public void testGetAllAnswerFormIdAndFiller()
     {
         String token = jwtHelper.createToken(10L);
-        Result result = userController.getAllAnswerFormIdAndFiller(token,8L);
+        Result result = userController.getAllAnswerFormIdAndFiller(8L);
         //System.out.println(result.getData());
     }
 
@@ -309,6 +312,107 @@ public class Neo4jSpringBootApplicationTests {
         System.out.println(result.getData());
     }
 
+    @Test
+    public void testgetFinishedFormTitleAndId()
+    {
+        String token = jwtHelper.createToken(2L);
+        Result result = userController.getFinishedFormTitleAndId(token);
+    }
 
+    @Test
+    public void testgetNotFinishedFormTitleAndId()
+    {
+        String token = jwtHelper.createToken(10L);
+        Result result = userController.getNotFinishedFormTitleAndId(token);
+    }
 
+    @Test
+    public void testgetAllUsers()
+    {
+        Result result = adminController.getAllUsers();
+        System.out.println(result.getData());
+    }
+
+    @Test
+    public void testdeleteUsers()
+    {
+        List<Long> targetIds = Arrays.asList(36L,37L);
+        adminController.deleteUsers(targetIds);
+    }
+
+    @Test
+    public void testgetAllGroups()
+    {
+        Result result = adminController.getAllGroups();
+        System.out.println(result.getData());
+    }
+
+    @Test
+    public void testcheckGroup()
+    {
+        Long groupId = 34L;
+        Result result = adminController.checkGroup(groupId);
+        System.out.println(result.getData());
+    }
+
+    @Test
+    public void testdeleteUserFormGroup()
+    {
+        Long userId = 36L;
+        Long groupId =35L;
+        adminController.deleteUserFormGroup(userId,groupId);
+    }
+
+    @Test
+    public void testjoinUserIntoGroup()
+    {
+        Long userId = 38L;
+        Long groupId = 35L;
+        adminController.joinUserIntoGroup(userId,groupId);
+    }
+
+    @Test
+    public void testdeleteGroup()
+    {
+        Long groupId = 35L;
+        adminController.deleteGroup(groupId);
+    }
+
+    @Test
+    public void testgetAllquestionnaires()
+    {
+        Result result = adminController.getAllQuestionnaires();
+        System.out.println(result.getData());
+    }
+
+    @Test
+    public void testcreateGroup()
+    {
+        String groupName = "管理员测试组2";
+        Result result = adminController.createGroup(groupName);
+    }
+
+    @Test
+    public void testgetQuestionnaireDetails()
+    {
+        Long questionnaireCoreId = 30L;
+        Result result = adminController.getQuestionnaireDetails(questionnaireCoreId);
+        System.out.println(result.getData());
+    }
+
+    @Test
+    public void testgetAllAnswerForm()
+    {
+        Long questionnaireCoreId = 25L;
+        Result result = adminController.getAllAnswerForm(questionnaireCoreId);
+        System.out.println(result.getData());
+    }
+
+    @Test
+    public void testgetAnswerFormDetails()
+    {
+        Long answerCoreId = 13L;
+        Result result = adminController.getAnswerFormDetails(answerCoreId);
+        System.out.println(result.getData());
+    }
 }

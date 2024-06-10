@@ -89,9 +89,9 @@ public class UserController {
     }
 
     @PostMapping("/getAllAnswerFormIdAndFiller") //用户查询其所创建的某一个问卷的所有答案卷
-    public Result getAllAnswerFormIdAndFiller(@RequestBody String token, @RequestBody Long questionCoreId)
+    public Result getAllAnswerFormIdAndFiller(@RequestBody Long questionCoreId)
     {
-        Result result = userService.getAllAnswerFormIdAndFiller(token,questionCoreId);
+        Result result = userService.getAllAnswerFormIdAndFiller(questionCoreId);
         return result;
     }
 
@@ -109,10 +109,24 @@ public class UserController {
         return result;
     }
 
-    @PostMapping("/searchFormCreated")
-    public Result getCreatedFormTitleAndId(@RequestBody String token)
+    @PostMapping("/searchFormCreated") //获取用户已经创建的表单
+    public Result getCreatedFormTitleAndId(@RequestHeader String token)
     {
         Result result = userService.getCreatedFormTitleAndId(token);
+        return result;
+    }
+
+    @PostMapping("/searchFormFinished") //获取用户已经填写的表单
+    public Result getFinishedFormTitleAndId(@RequestHeader String token)
+    {
+        Result result = userService.getFinishedFormTitleAndId(token);
+        return result;
+    }
+
+    @PostMapping("/searchFormNotFinished") //获取用户还没填写的表单
+    public Result getNotFinishedFormTitleAndId(@RequestHeader String token)
+    {
+        Result result = userService.getNotFinishedFormTitleAndId(token);
         return result;
     }
 
@@ -123,7 +137,24 @@ public class UserController {
         return result;
     }
 
+    @GetMapping("/test")
+    public void test(@RequestBody List<Questionnaire> questionnaires,@RequestBody String questionnaireTitle,@RequestBody String token,@RequestBody List<Long> targetGroupIds)
+    {
+        for(int i=0;i<questionnaires.size();i++)
+        {
+            System.out.println(questionnaires.get(i));
+        }
+        System.out.println(questionnaireTitle);
+        System.out.println(token);
+        System.out.println(targetGroupIds);
 
+    }
+
+    @PostMapping("/testtest")
+    public void test(@RequestParam("targetGroupIds[]")List<Questionnaire> targetGroupIds)
+    {
+        System.out.println(targetGroupIds);
+    }
 
 
 }

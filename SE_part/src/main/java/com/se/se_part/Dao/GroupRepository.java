@@ -37,4 +37,12 @@ public interface GroupRepository extends Neo4jRepository<Group,Long> {
     //通过用户id找到用户所创建的组
     @Query("match (a)-[r:userAdministrate]->(b) where id(a)=$userId return ENDNODE(r)")
     List<Group> findAdministrateGroupByUserId(Long userId);
+
+    /*管理员所需组功能函数*/
+    @Query("match(n:Group) return n")
+    List<Group> adminGetAllGroups();
+
+    //管理员通过组id删除用户组
+    @Query("match(n:Group) where id(n)=$groupId detach delete n")
+    void deleteGroup(Long groupId);
 }

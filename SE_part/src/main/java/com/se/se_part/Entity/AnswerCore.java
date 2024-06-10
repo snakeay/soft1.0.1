@@ -14,5 +14,5 @@ public class AnswerCore
     @GeneratedValue
     private Long id;
     @Property
-    private Long questionnaireCoreId;
+    private String title;
 }

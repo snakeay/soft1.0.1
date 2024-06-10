@@ -125,4 +125,22 @@ public interface UserRepository extends Neo4jRepository<User,Long>
     //TODO：按照用户Id查找用户
     @Query("match(n:User) where id(n)=$userId return n")
     User FindByUserId(Long userId);
+
+
+    /*-----------------------------------------TODO:以下是管理员的相关函数-------------------------------------------------------------------------------------------------------*/
+    //TODO:管理员找到所有用户
+    @Query("match(n:User) return n")
+    List<User> adminGetAllUsers();
+
+    //TODO:管理员通过id删除用户
+    @Query("match(n:User) where id(n)=$userId detach delete n")
+    void adminDelteUserById(Long userId);
+
+    //TODO:通过组id找到组里所属的用户
+    @Query("MATCH(a)-[r:userBelongsTo]->(b) WHERE id(b)=$groupId RETURN a")
+    List<User> getUsersInGroup(Long groupId);
+
+    //TODO：通过组id找到组创建者
+    @Query("match(a)-[r:userAdministrate]->(b) where id(b)=$groupId return a")
+    User getadminInGroup(Long groupId);
 }

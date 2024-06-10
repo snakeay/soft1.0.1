@@ -49,11 +49,15 @@ public interface UserService  {
     Result getAnswerFormDetails(String token, Long questionCoreId);
 
     /*TODO：向前端返回所有答案卷（问卷创建者查看所有填写情况）*/
-    Result getAllAnswerFormIdAndFiller(String token, Long questionCoreId);
+    Result getAllAnswerFormIdAndFiller(Long questionCoreId);
 
     Result searchInfoByOneType(Long questionCoreId, String type);
 
     Result getCreatedFormTitleAndId(String token);
 
     Result getUserInfo(String token);
+
+    Result getFinishedFormTitleAndId(String token);
+
+    Result getNotFinishedFormTitleAndId(String token);
 }

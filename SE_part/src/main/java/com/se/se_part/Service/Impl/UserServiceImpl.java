@@ -286,9 +286,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result getAllAnswerFormIdAndFiller(String token, Long questionCoreId)
+    public Result getAllAnswerFormIdAndFiller(Long questionCoreId)
     {
-        Long userId = jwtHelper.getUserId(token);
         Map data = new HashMap(); //key:填写者nickname，value:答案卷中心节点id
         List<AnswerCore> answerCoresOfOneQueCore = answercorerepository.getAllAnswerCoreByQueCoreId(questionCoreId); //找到指定问题卷的所有答案中心节点
         for(int i=0;i<answerCoresOfOneQueCore.size();i++)
@@ -329,6 +328,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Result getUserInfo(String token)
+    {
+        boolean expiration = jwtHelper.isExpiration(token);
+        System.out.println(expiration);
+        if (expiration) {
+            return Result.build(null,ResultCodeEnum.NOTLOGIN);
+        }
+        Long userId = jwtHelper.getUserId(token);
+        User user = userrepository.FindByUserId(userId);
+        user.setPassword("");
+        System.out.println(user);
+        Map data=new HashMap<>();
+        data.put("loginUser",user);
+        return Result.ok(data);
+    }
+
+    @Override
     public Result getCreatedFormTitleAndId(String token)
     {
         Long userId = jwtHelper.getUserId(token);
@@ -342,18 +358,52 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result getUserInfo(String token) {
-        boolean expiration = jwtHelper.isExpiration(token);
-        System.out.println(expiration);
-        if (expiration) {
-            return Result.build(null,ResultCodeEnum.NOTLOGIN);
-        }
+    public Result getFinishedFormTitleAndId(String token)
+    {
         Long userId = jwtHelper.getUserId(token);
-        User user = userrepository.FindByUserId(userId);
-        user.setPassword("");
-        System.out.println(user);
-        Map data=new HashMap<>();
-        data.put("loginUser",user);
+        List<AnswerCore> answerCores = new ArrayList<>();
+        answerCores.addAll(answercorerepository.getAnswerCoreByUserId(userId)); //找到用户填写的所有答案中心节点
+        System.out.println(answerCores);
+
+        Map data = new HashMap<>();
+        for(int i=0;i<answerCores.size();i++)
+        {
+            Long ansId = answerCores.get(i).getId();
+            Long queId = questionnairecorerepository.getQueCoreIdByAnsId(ansId);
+            data.put(answerCores.get(i).getTitle(),queId);
+        }
+
+        //System.out.println(data);
+
+        return Result.ok(data);
+    }
+
+    @Override
+    public Result getNotFinishedFormTitleAndId(String token)
+    {
+        Long userId = jwtHelper.getUserId(token);
+        List<Group> groups = grouprepository.findBelongGroupByUserId(userId);
+        groups.addAll(grouprepository.findAdministrateGroupByUserId(userId)); //找到与用户有关的所有组
+        List<QuestionnaireCore> questionnaireCores = new ArrayList<>();
+        System.out.println(questionnaireCores);
+        List<AnswerCore> answerCores = new ArrayList<>();
+        Map data = new HashMap<>();
+        for(int i=0;i<groups.size();i++)
+        {
+            questionnaireCores.addAll(questionnairecorerepository.findQuestionnaireCore(groups.get(i).getId())); //找到和用户有关的所有问题卷中心节点
+        }
+        questionnaireCores.removeAll(questionnairecorerepository.getAllCreatedQuestionnaireCore(userId));
+        for(int i=0;i<questionnaireCores.size();i++)
+        {
+
+            AnswerCore answerCoreTemp = answercorerepository.getAnswerCoreByRelationsAndQueId(userId, questionnaireCores.get(i).getId());
+            if(answerCoreTemp == null)
+            {
+                data.put(questionnaireCores.get(i).getTitle(), questionnaireCores.get(i).getId());
+            }
+        }
+        //System.out.println(data);
+
         return Result.ok(data);
     }
 }

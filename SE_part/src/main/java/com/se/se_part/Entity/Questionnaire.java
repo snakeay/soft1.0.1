@@ -12,15 +12,13 @@ import java.util.List;
  * @author DWC
  */
 @Data
-public class Questionnaire //数据库中的问题节点
+public class Questionnaire
 {
-    @Id
-    @GeneratedValue
-    private Long id;
     @Property
     private Integer type; //type 012 -> 单选、多选、提问
     @Property
     private String questionTitle; //题头
     @Property
     private List<String> questionContent; //选择题的选项
+
 }

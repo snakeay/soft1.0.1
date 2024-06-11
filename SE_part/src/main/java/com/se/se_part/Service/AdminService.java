@@ -7,7 +7,7 @@ import java.util.List;
 public interface AdminService {
     Result getAllUsers();
 
-    Result deleteUsers(List<Long> userIds);
+    Result deleteUsers(Long userId);
 
     Result getAllGroups();
 

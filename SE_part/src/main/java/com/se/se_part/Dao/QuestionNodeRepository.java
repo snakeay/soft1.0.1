@@ -20,4 +20,5 @@ public interface QuestionNodeRepository extends Neo4jRepository<QuestionNode,Lon
     //通过title找到number
     @Query("match(a)-[r:questionBelongsTo]->(b) where id(b)=$coreId and a.title = $title return a.number")
     int getNumberByTitle(Long coreId, String title);
+
 }

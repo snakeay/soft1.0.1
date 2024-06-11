@@ -39,11 +39,13 @@ public interface UserService  {
     Result createAnswerForm(List<Answers> answerList, Long questionnaireCoreId,String token);
 
 
+    void dataModeling(Long questionnaireCoreId, Long answerCoreId);
+
     /*TODO:向前端返回所有与用户有关的问卷标题和id*/
     Result getAllFormIdAndTitle(String token);
 
     /*TODO:向前端返回一个问卷的具体内容*/
-    Result getWholeFormDetails(Long targetFormId);
+    Result getWholeFormDetails(String token, Long targetFormId);
 
     /*TODO:向前端返回一个答案卷的具体内容(用户查看自己填写的答案卷)*/
     Result getAnswerFormDetails(String token, Long questionCoreId);
@@ -60,4 +62,5 @@ public interface UserService  {
     Result getFinishedFormTitleAndId(String token);
 
     Result getNotFinishedFormTitleAndId(String token);
+
 }

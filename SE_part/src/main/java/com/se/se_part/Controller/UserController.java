@@ -82,9 +82,9 @@ public class UserController {
     }
 
     @PostMapping("/getWholeFormDetails") //获取某一个指定的问题卷的所有内容
-    public Result getFormDetails(@RequestBody Long targetFormId)
+    public Result getFormDetails(@RequestHeader String token, @RequestParam("targetFormId") Long targetFormId)
     {
-        Result result = userService.getWholeFormDetails(targetFormId);
+        Result result = userService.getWholeFormDetails(token, targetFormId);
         return result;
     }
 
@@ -103,7 +103,7 @@ public class UserController {
     }
 
     @PostMapping("/searchInfoByOneType") //用户查看某一张问卷中的某一道题(输入title)的作答情况
-    public Result searchInfoByOneType(@RequestBody Long questionCoreId, @RequestBody String type)
+    public Result searchInfoByOneType(@RequestParam("questionCoreId") Long questionCoreId, @RequestParam("type") String type)
     {
         Result result = userService.searchInfoByOneType(questionCoreId,type);
         return result;

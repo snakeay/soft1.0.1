@@ -6,6 +6,7 @@ import com.se.se_part.Dao.GroupRepository;
 import com.se.se_part.Dao.UserRepository;
 import com.se.se_part.Entity.*;
 import com.se.se_part.Main;
+import com.se.se_part.Service.UserService;
 import com.se.se_part.Utils.JwtHelper;
 import com.se.se_part.Utils.Result;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,8 @@ import java.util.Optional;
 public class Neo4jSpringBootApplicationTests {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
     @Autowired
     private UserController userController;
     @Autowired
@@ -212,7 +215,8 @@ public class Neo4jSpringBootApplicationTests {
     @Test
     public void testPostQuestionnaire()
     {
-        Result result = userController.getFormDetails(8L);
+        String token = jwtHelper.createToken(2L);
+        Result result = userController.getFormDetails(token,25L);
         System.out.println(result.getData());
     }
 
@@ -273,15 +277,15 @@ public class Neo4jSpringBootApplicationTests {
     public void testFinishQuestionnaire()
     {
         //TODO:测试填写表单函数
-        String token = jwtHelper.createToken(29L);
-        Long questionFormId = 25L;
+        String token = jwtHelper.createToken(36L);
+        Long questionFormId = 40L;
         List<Answers> answers = new ArrayList<>();
         Answers answers1 = new Answers();
         Answers answers2 = new Answers();
         Answers answers3 = new Answers();
-        List<String> list1 = Arrays.asList("选项a");
-        List<String> list2 = Arrays.asList("选项a","选项b");
-        List<String> list3 = Arrays.asList("填空题");
+        List<String> list1 = Arrays.asList("田文镜");
+        List<String> list2 = Arrays.asList("60");
+        List<String> list3 = Arrays.asList("京师");
         answers1.setAnswer(list1);
         answers2.setAnswer(list2);
         answers3.setAnswer(list3);
@@ -303,7 +307,7 @@ public class Neo4jSpringBootApplicationTests {
     public void testsearchInfoByOneType()
     {
         Result result = userController.searchInfoByOneType(8L,"多项选择题：");
-
+        System.out.println(result.getData());
     }
 
     @Test
@@ -338,8 +342,8 @@ public class Neo4jSpringBootApplicationTests {
     @Test
     public void testdeleteUsers()
     {
-        List<Long> targetIds = Arrays.asList(36L,37L);
-        adminController.deleteUsers(targetIds);
+        Long targetId = 36L;
+        adminController.deleteUsers(targetId);
     }
 
     @Test
@@ -397,8 +401,9 @@ public class Neo4jSpringBootApplicationTests {
     @Test
     public void testgetQuestionnaireDetails()
     {
-        Long questionnaireCoreId = 30L;
-        Result result = adminController.getQuestionnaireDetails(questionnaireCoreId);
+        String adminToken = jwtHelper.createToken(36L);
+        Long questionnaireCoreId = 40L;
+        Result result = adminController.getQuestionnaireDetails(adminToken, questionnaireCoreId);
         System.out.println(result.getData());
     }
 
@@ -416,5 +421,11 @@ public class Neo4jSpringBootApplicationTests {
         Long answerCoreId = 13L;
         Result result = adminController.getAnswerFormDetails(answerCoreId);
         System.out.println(result.getData());
+    }
+
+    @Test
+    public void testModeling()
+    {
+        userService.dataModeling(40L,44L);
     }
 }

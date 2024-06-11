@@ -36,9 +36,9 @@ public class AdminController
     }
 
     @PostMapping("/deleteUsers")
-    public Result deleteUsers(@RequestBody List<Long> userIds)
+    public Result deleteUsers(@RequestParam Long userId)
     {
-        Result result = adminService.deleteUsers(userIds);
+        Result result = adminService.deleteUsers(userId);
         return  result;
     }
 
@@ -64,21 +64,21 @@ public class AdminController
     }
 
     @PostMapping("/checkGroupUsers")
-    public Result checkGroup(@RequestBody Long groupId)
+    public Result checkGroup(@RequestParam Long groupId)
     {
         Result result = adminService.checkGroup(groupId);
         return result;
     }
 
     @PostMapping("/deleteUserFormGroup")
-    public Result deleteUserFormGroup(@RequestBody Long userId, @RequestBody Long groupId)
+    public Result deleteUserFormGroup(@RequestParam Long userId, @RequestParam Long groupId)
     {
         Result result = adminService.deleteUserFormGroup(userId,groupId);
         return result;
     }
 
     @PostMapping("/joinUserIntoGroup")
-    public Result joinUserIntoGroup(@RequestBody Long userId, @RequestBody Long groupId)
+    public Result joinUserIntoGroup(@RequestParam Long userId, @RequestParam Long groupId)
     {
         Result result = adminService.joinUserIntoGroup(userId,groupId);
         return result;
@@ -92,21 +92,21 @@ public class AdminController
     }
 
     @PostMapping("/getQuestionnaireDetails")
-    public Result getQuestionnaireDetails(@RequestBody Long questionnaireCoreId)
+    public Result getQuestionnaireDetails(@RequestHeader String token, @RequestBody Long questionnaireCoreId)
     {
-        Result result = userService.getWholeFormDetails(questionnaireCoreId);
+        Result result = userService.getWholeFormDetails(token, questionnaireCoreId);
         return result;
     }
 
     @PostMapping("/getAllAnswerForm")
-    public Result getAllAnswerForm(@RequestBody Long questionnaireCoreId)
+    public Result getAllAnswerForm(@RequestParam Long questionnaireCoreId)
     {
         Result result = userService.getAllAnswerFormIdAndFiller(questionnaireCoreId);
         return result;
     }
 
     @PostMapping("/getAnswerFormDetails")
-    public Result getAnswerFormDetails(@RequestBody Long answerCoreId)
+    public Result getAnswerFormDetails(@RequestParam Long answerCoreId)
     {
         Result result = adminService.getAnswerFormDetails(answerCoreId);
         return result;

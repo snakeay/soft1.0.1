@@ -34,12 +34,9 @@ public class AdminServiceImpl implements AdminService
     }
 
     @Override
-    public Result deleteUsers(List<Long> userIds)
+    public Result deleteUsers(Long userId)
     {
-        for(int i=0; i<userIds.size(); i++)
-        {
-            userRepository.adminDelteUserById(userIds.get(i));
-        }
+        userRepository.adminDelteUserById(userId);
         return Result.ok(null);
     }
 
@@ -86,13 +83,8 @@ public class AdminServiceImpl implements AdminService
     @Override
     public Result getAllquestionnaires()
     {
-        Map<String,Long> data = new HashMap<String,Long>();
         List<QuestionnaireCore> questionnaireCores = questionnaireCoreRepository.adminGetAllQuesionnaires();
-        for(int i=0;i<questionnaireCores.size();i++)
-        {
-            data.put(questionnaireCores.get(i).getTitle(),questionnaireCores.get(i).getId());
-        }
-        return Result.ok(data);
+        return Result.ok(questionnaireCores);
     }
 
     @Override

@@ -10,10 +10,9 @@ import com.se.se_part.Utils.ResultCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -184,9 +183,87 @@ public class UserServiceImpl implements UserService {
                 }
             }
         }
+        dataModeling(questionnaireCoreId,answerCoreId);
         return Result.ok(null);
     }
 
+    public static boolean matchString(String input, String pattern) {
+        Pattern regexPattern = Pattern.compile(pattern);
+        Matcher matcher = regexPattern.matcher(input);
+        return matcher.matches();
+    }
+
+    @Override
+    public void dataModeling(Long questionnaireCoreId, Long answerCoreId)
+    {
+        Long userId = userrepository.getUserIdByAnswerCoreId(answerCoreId);
+        List<QuestionNode> questionNodes = questionnoderepository.getQuestionNodeByCoreId(questionnaireCoreId); //首先找到答案卷对应的问题卷的所有题目
+        for(int i=0;i<questionNodes.size();i++)
+        {
+            String mainString = questionNodes.get(i).getTitle();
+            if(matchString(mainString, "您的姓名是什么"))
+            {
+                int number = questionNodes.get(i).getNumber();
+                AnswerNode answerNode = answernoderepository.getAllAnswerNodesByCoreIdAndNumber(answerCoreId, number);
+                String name = answerNode.getQ1();
+                if(userrepository.getUserName(userId)==null) //不存在已建立的姓名节点
+                {
+                    Long attributeId = userrepository.createUserName(name); //建立姓名节点
+                    userrepository.attributeNameToUser(attributeId,userId); //姓名节点连接到用户节点
+                }
+                else //存在已建立的姓名节点，更新节点Name属性
+                {
+                    userrepository.updateUserName(userId,name);
+                }
+            }
+            if(matchString(mainString, "您的性别是什么"))
+            {
+                int number = questionNodes.get(i).getNumber();
+                AnswerNode answerNode = answernoderepository.getAllAnswerNodesByCoreIdAndNumber(answerCoreId, number);
+                String sex = answerNode.getQ1();
+                if(userrepository.getUserSex(userId)==null)
+                {
+                    Long attributeId = userrepository.createUserSex(sex);
+                    userrepository.attributeSexToUser(attributeId,userId);
+                }
+                else
+                {
+                    userrepository.updateUserSex(userId,sex);
+                }
+            }
+            if(matchString(mainString, "您的年龄是多少"))
+            {
+                int number = questionNodes.get(i).getNumber();
+                AnswerNode answerNode = answernoderepository.getAllAnswerNodesByCoreIdAndNumber(answerCoreId, number);
+                String age = answerNode.getQ1();
+                if(userrepository.getUserAge(userId)==null)
+                {
+                    Long attributeId = userrepository.createUserAge(age);
+                    userrepository.attributeAgeToUser(attributeId,userId);
+                }
+                else
+                {
+                    userrepository.updateUserAge(userId,age);
+                }
+            }
+            if(matchString(mainString, "您的联系方式是多少"))
+            {
+                int number = questionNodes.get(i).getNumber();
+                AnswerNode answerNode = answernoderepository.getAllAnswerNodesByCoreIdAndNumber(answerCoreId, number);
+                String tel = answerNode.getQ1();
+                if(userrepository.getUserTel(userId)==null)
+                {
+                    Long attributeId = userrepository.createUserTel(tel);
+                    userrepository.attributeTelToUser(attributeId,userId);
+                }
+                else
+                {
+                    userrepository.updateUserTel(userId,tel);
+                }
+            }
+        }
+
+    }
 
     @Override
     public Result getAllFormIdAndTitle(String token) //获取所有表单的和标题
@@ -208,53 +285,77 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result getWholeFormDetails(Long targetFormId)
+    public Result getWholeFormDetails(String token,Long targetFormId)
     {
+        Long userId = jwtHelper.getUserId(token); //获取用户id
         List<QuestionNode> questionNodes = questionnoderepository.getQuestionNodeByCoreId(targetFormId); //通过问卷中心节点id找到整个问卷的所有题目
         List<Questionnaire> questionnaires = new ArrayList<>(); //用于打包整道题的List
 
-        for(int i=0;i<questionNodes.size();i++)
+
+        for(int j=1;j<=3;j++) //遍历题序
         {
-            Questionnaire questionnaire = new Questionnaire();
-            questionnaire.setType(questionNodes.get(i).getType()); //获取第i道题的type
-            questionnaire.setQuestionTitle(questionNodes.get(i).getTitle()); //获取第i道题的title
+            for (int i = 0; i < questionNodes.size(); i++)
+            {
+                if(questionNodes.get(i).getNumber()==j)
+                {
+                    String answer = null; //用户打包可以用于回显的答案
+                    Questionnaire questionnaire = new Questionnaire();
+                    questionnaire.setType(questionNodes.get(i).getType()); //获取第i道题的type
+                    questionnaire.setQuestionTitle(questionNodes.get(i).getTitle()); //获取第i道题的title
+                    //System.out.println(questionNodes.get(i).getTitle());
+                    if(matchString(questionNodes.get(i).getTitle(),"您的姓名是什么"))
+                    {
+                        String userName = userrepository.getUserName(userId);
+                        answer = userName;
+                    }
+                    if(matchString(questionNodes.get(i).getTitle(),"您的性别是什么"))
+                    {
+                        String userSex = userrepository.getUserSex(userId);
+                        answer = userSex;
+                    }
+                    if(matchString(questionNodes.get(i).getTitle(),"您的年龄是多少"))
+                    {
+                        String userAge = userrepository.getUserAge(userId);
+                        answer = userAge;
+                    }
+                    if(matchString(questionNodes.get(i).getTitle(),"您的联系方式是多少"))
+                    {
+                        String userTel = userrepository.getUserTel(userId);
+                        answer = userTel;
+                    }
+                    List<String> questionContents = new ArrayList<>(); //用于打包某道题的所有选项的List
+                    if (questionNodes.get(i).getQ1() != "") {
+                        questionContents.add(questionNodes.get(i).getQ1());
+                    }
+                    if (questionNodes.get(i).getQ2() != "") {
+                        questionContents.add(questionNodes.get(i).getQ2());
+                    }
+                    if (questionNodes.get(i).getQ3() != "") {
+                        questionContents.add(questionNodes.get(i).getQ3());
+                    }
+                    if (questionNodes.get(i).getQ4() != "") {
+                        questionContents.add(questionNodes.get(i).getQ4());
+                    }
+                    if (questionNodes.get(i).getQ5() != "") {
+                        questionContents.add(questionNodes.get(i).getQ5());
+                    }
+                    if (questionNodes.get(i).getQ6() != "") {
+                        questionContents.add(questionNodes.get(i).getQ6());
+                    }
+                    if (questionNodes.get(i).getQ7() != "") {
+                        System.out.println("1");
+                        questionContents.add(questionNodes.get(i).getQ7());
+                    }
+                    if (questionNodes.get(i).getQ8() != "") {
+                        questionContents.add(questionNodes.get(i).getQ8());
+                    }
+                    questionnaire.setQuestionContent(questionContents); //获取第i道题的内容
+                    questionnaire.setAnswer(answer);
 
-            List<String> questionContents =new ArrayList<>(); //用于打包某道题的所有选项的List
-            if(questionNodes.get(i).getQ1() != null)
-            {
-                questionContents.add(questionNodes.get(i).getQ1());
+                    questionnaires.add(questionnaire);
+                }
+                else continue;
             }
-            if(questionNodes.get(i).getQ2() != null)
-            {
-                questionContents.add(questionNodes.get(i).getQ2());
-            }
-            if(questionNodes.get(i).getQ3() != null)
-            {
-                questionContents.add(questionNodes.get(i).getQ3());
-            }
-            if(questionNodes.get(i).getQ4() != null)
-            {
-                questionContents.add(questionNodes.get(i).getQ4());
-            }
-            if(questionNodes.get(i).getQ5() != null)
-            {
-                questionContents.add(questionNodes.get(i).getQ5());
-            }
-            if(questionNodes.get(i).getQ6() != null)
-            {
-                questionContents.add(questionNodes.get(i).getQ6());
-            }
-            if(questionNodes.get(i).getQ7() != null)
-            {
-                questionContents.add(questionNodes.get(i).getQ7());
-            }
-            if(questionNodes.get(i).getQ8() != null)
-            {
-                questionContents.add(questionNodes.get(i).getQ8());
-            }
-            questionnaire.setQuestionContent(questionContents); //获取第i道题的内容
-
-            questionnaires.add(questionnaire);
         }
         return Result.ok(questionnaires);
     }
@@ -311,20 +412,19 @@ public class UserServiceImpl implements UserService {
             String userNickname = userrepository.getFillerNickname(answerCoreId);
             AnswerNode answerNode = answernoderepository.getAnswerNodeByNumber(answerCoreId, answerCoreNumber);
             List<String> answerInAnswerNode = new ArrayList<>();
-            if(answerNode.getQ1() != null) answerInAnswerNode.add(answerNode.getQ1());
-            if(answerNode.getQ2() != null) answerInAnswerNode.add(answerNode.getQ2());
-            if(answerNode.getQ3() != null) answerInAnswerNode.add(answerNode.getQ3());
-            if(answerNode.getQ4() != null) answerInAnswerNode.add(answerNode.getQ4());
-            if(answerNode.getQ5() != null) answerInAnswerNode.add(answerNode.getQ5());
-            if(answerNode.getQ6() != null) answerInAnswerNode.add(answerNode.getQ6());
-            if(answerNode.getQ7() != null) answerInAnswerNode.add(answerNode.getQ7());
-            if(answerNode.getQ8() != null) answerInAnswerNode.add(answerNode.getQ8());
+            if(answerNode.getQ1() != "") answerInAnswerNode.add(answerNode.getQ1());
+            if(answerNode.getQ2() != "") answerInAnswerNode.add(answerNode.getQ2());
+            if(answerNode.getQ3() != "") answerInAnswerNode.add(answerNode.getQ3());
+            if(answerNode.getQ4() != "") answerInAnswerNode.add(answerNode.getQ4());
+            if(answerNode.getQ5() != "") answerInAnswerNode.add(answerNode.getQ5());
+            if(answerNode.getQ6() != "") answerInAnswerNode.add(answerNode.getQ6());
+            if(answerNode.getQ7() != "") answerInAnswerNode.add(answerNode.getQ7());
+            if(answerNode.getQ8() != "") answerInAnswerNode.add(answerNode.getQ8());
             answer.setAnswer(answerInAnswerNode);
-            data.put(userNickname, answer);
+            data.put(userNickname, answer.getAnswer());
         }
-        System.out.println(data);
 
-        return null;
+        return Result.ok(data);
     }
 
     @Override

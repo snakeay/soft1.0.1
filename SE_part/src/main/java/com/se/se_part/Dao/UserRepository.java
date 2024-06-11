@@ -122,6 +122,10 @@ public interface UserRepository extends Neo4jRepository<User,Long>
     @Query("match(a)-[r:finishForm]->(b) where id(b)=$answerCoreId return a.nickname")
     String getFillerNickname(Long answerCoreId);
 
+    //通过答案卷中心节点id找到用户（填写者）返回用户id
+    @Query("match(a)-[r:finishForm]->(b) where id(b)=$answerCoreId return id(a)")
+    Long getUserIdByAnswerCoreId(Long answerCoreId);
+
     //TODO：按照用户Id查找用户
     @Query("match(n:User) where id(n)=$userId return n")
     User FindByUserId(Long userId);
@@ -150,4 +154,57 @@ public interface UserRepository extends Neo4jRepository<User,Long>
 
     @Query("match (a)-[rel:userAdministrate]->(b) where id(b) = $groupId return startnode(rel)")
     User findUserCreatedByGroupId(Long groupId);
+
+    /*------------------------------------------TODO：数据建模---------------------------------------------------------------------------------------------------------*/
+    //通过用户id找到姓名节点，获取姓名
+    @Query("match(a:UserName)-[r:userAttribute]->(b) where id(b)=$userId return a.Name")
+    String getUserName(Long userId);
+    //更新姓名节点属性
+    @Query("MATCH(a:UserName)-[r:userAttribute]->(b) WHERE id(b)=$userId SET a.Name=$userName")
+    void updateUserName(Long userId,String userName);
+    //给用户建立姓名节点
+    @Query("CREATE(n:UserName{Name:$name}) return id(n)")
+    Long createUserName(String name);
+    //将姓名节点连接到用户上
+    @Query("MATCH(a),(b) WHERE id(a)=$attributeId AND id(b)=$userId CREATE(a)-[r:userAttribute]->(b)")
+    void attributeNameToUser(Long attributeId,Long userId);
+
+    //通过用户id找到年龄节点，获取年龄
+    @Query("match(a:UserAge)-[r:userAttribute]->(b) where id(b)=$userId return a.Age")
+    String getUserAge(Long userId);
+    //更新年龄节点属性
+    @Query("MATCH(a:UserAge)-[r:userAttribute]->(b) WHERE id(b)=$userId SET a.Age=$userAge")
+    void updateUserAge(Long userId,String userAge);
+    //给用户建立年龄节点
+    @Query("CREATE(n:UserAge{Age:$age}) return id(n)")
+    Long createUserAge(String age);
+    //将年龄节点连接到用户上
+    @Query("MATCH(a),(b) WHERE id(a)=$attributeId AND id(b)=$userId CREATE(a)-[r:userAttribute]->(b)")
+    void attributeAgeToUser(Long attributeId,Long userId);
+
+    //通过用户id找到性别节点，获取性别
+    @Query("match(a:UserSex)-[r:userAttribute]->(b) where id(b)=$userId return a.Sex")
+    String getUserSex(Long userId);
+    //更新性别节点属性
+    @Query("MATCH(a:UserSex)-[r:userAttribute]->(b) WHERE id(b)=$userId SET a.Sex=$userSex")
+    void updateUserSex(Long userId,String userSex);
+    //给用户建立性别节点
+    @Query("CREATE(n:UserSex{Sex:$sex}) return id(n)")
+    Long createUserSex(String sex);
+    //将性别节点连接到用户上
+    @Query("MATCH(a),(b) WHERE id(a)=$attributeId AND id(b)=$userId CREATE(a)-[r:userAttribute]->(b)")
+    void attributeSexToUser(Long attributeId,Long userId);
+
+    //通过用户id找到联系方式节点，获取联系方式
+    @Query("match(a:UserTel)-[r:userAttribute]->(b) where id(b)=$userId return a.Tel")
+    String getUserTel(Long userId);
+    //更新联系方式节点属性
+    @Query("MATCH(a:UserTel)-[r:userAttribute]->(b) WHERE id(b)=$userId SET a.Tel=$userTel")
+    void updateUserTel(Long userId,String userTel);
+    //给用户建立联系方式节点
+    @Query("CREATE(n:UserTel{Tel:$tel}) return id(n)")
+    Long createUserTel(String tel);
+    //将联系方式节点连接到用户上
+    @Query("MATCH(a),(b) WHERE id(a)=$attributeId AND id(b)=$userId CREATE(a)-[r:userAttribute]->(b)")
+    void attributeTelToUser(Long attributeId,Long userId);
 }

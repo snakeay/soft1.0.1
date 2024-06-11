@@ -18,6 +18,8 @@ public class Questionnaire
     private Integer type; //type 012 -> 单选、多选、提问
     @Property
     private String questionTitle; //题头
+
+    private String answer; //回显用的答案
     @Property
     private List<String> questionContent; //选择题的选项
 

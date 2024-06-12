@@ -372,14 +372,14 @@ public class UserServiceImpl implements UserService {
             Answers answer = new Answers();
             AnswerNode answerNode = answernoderepository.getAllAnswerNodesByCoreIdAndNumber(answerCoreId,i+1); //获取序号为i+1的题目答案
             List<String> answerInAnswerNode = new ArrayList<>();
-            if(answerNode.getQ1() != null) answerInAnswerNode.add(answerNode.getQ1());
-            if(answerNode.getQ2() != null) answerInAnswerNode.add(answerNode.getQ2());
-            if(answerNode.getQ3() != null) answerInAnswerNode.add(answerNode.getQ3());
-            if(answerNode.getQ4() != null) answerInAnswerNode.add(answerNode.getQ4());
-            if(answerNode.getQ5() != null) answerInAnswerNode.add(answerNode.getQ5());
-            if(answerNode.getQ6() != null) answerInAnswerNode.add(answerNode.getQ6());
-            if(answerNode.getQ7() != null) answerInAnswerNode.add(answerNode.getQ7());
-            if(answerNode.getQ8() != null) answerInAnswerNode.add(answerNode.getQ8());
+            if(answerNode.getQ1() != "") answerInAnswerNode.add(answerNode.getQ1());
+            if(answerNode.getQ2() != "") answerInAnswerNode.add(answerNode.getQ2());
+            if(answerNode.getQ3() != "") answerInAnswerNode.add(answerNode.getQ3());
+            if(answerNode.getQ4() != "") answerInAnswerNode.add(answerNode.getQ4());
+            if(answerNode.getQ5() != "") answerInAnswerNode.add(answerNode.getQ5());
+            if(answerNode.getQ6() != "") answerInAnswerNode.add(answerNode.getQ6());
+            if(answerNode.getQ7() != "") answerInAnswerNode.add(answerNode.getQ7());
+            if(answerNode.getQ8() != "") answerInAnswerNode.add(answerNode.getQ8());
             answer.setAnswer(answerInAnswerNode);
             answersList.add(answer);
         }

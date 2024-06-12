@@ -401,9 +401,8 @@ public class Neo4jSpringBootApplicationTests {
     @Test
     public void testgetQuestionnaireDetails()
     {
-        String adminToken = jwtHelper.createToken(36L);
         Long questionnaireCoreId = 40L;
-        Result result = adminController.getQuestionnaireDetails(adminToken, questionnaireCoreId);
+        Result result = adminController.getQuestionnaireDetails(questionnaireCoreId);
         System.out.println(result.getData());
     }
 

@@ -1,5 +1,6 @@
 package com.se.se_part.Controller;
 
+import com.se.se_part.Entity.Administrator;
 import com.se.se_part.Entity.Questionnaire;
 import com.se.se_part.Entity.User;
 import com.se.se_part.Service.AdminService;
@@ -22,6 +23,16 @@ public class AdminController
     private AdminService adminService;
     @Autowired
     private UserService userService;
+
+    @PostMapping("/adminLogin") // @RequestParam("account")String account, @RequestParam("password")String password
+    public Result login(@RequestBody Administrator admin)
+    {
+        Administrator adminForLogin = new Administrator();
+        adminForLogin.setAccount(admin.getAccount());
+        adminForLogin.setPassword(admin.getPassword());
+        Result result=adminService.adminlogin(adminForLogin);
+        return result;
+    }
     @PostMapping("/getAllUsers") //管理员获取所有的用户
     public Result getAllUsers()
     {
@@ -92,9 +103,9 @@ public class AdminController
     }
 
     @PostMapping("/getQuestionnaireDetails")
-    public Result getQuestionnaireDetails(@RequestHeader String token, @RequestBody Long questionnaireCoreId)
+    public Result getQuestionnaireDetails(@RequestParam Long questionnaireCoreId)
     {
-        Result result = userService.getWholeFormDetails(token, questionnaireCoreId);
+        Result result = adminService.getWholeFormDetails(questionnaireCoreId);
         return result;
     }
 

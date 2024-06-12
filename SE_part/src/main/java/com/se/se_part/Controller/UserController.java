@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @PostMapping("/SubmitAnswer") //用户答完题后提交答案
-    public Result submitAnswer(@RequestBody List<Answers> answers, @RequestParam Long questionnaireCoreId,@RequestHeader String token)
+    public Result submitAnswer(@RequestBody List<Answers> answers, @RequestParam("questionnaireCoreId") Long questionnaireCoreId,@RequestHeader String token)
     {
         Result result = userService.createAnswerForm(answers,questionnaireCoreId,token);
         return result;

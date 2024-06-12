@@ -1,5 +1,6 @@
 package com.se.se_part.Service;
 
+import com.se.se_part.Entity.Administrator;
 import com.se.se_part.Utils.Result;
 
 import java.util.List;
@@ -24,4 +25,8 @@ public interface AdminService {
     Result createGroup(String groupName);
 
     Result getAnswerFormDetails(Long answerCoreId);
+
+    Result adminlogin(Administrator adminForLogin);
+
+    Result getWholeFormDetails(Long questionnaireCoreId);
 }

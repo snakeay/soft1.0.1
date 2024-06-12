@@ -292,7 +292,7 @@ public class UserServiceImpl implements UserService {
         List<Questionnaire> questionnaires = new ArrayList<>(); //用于打包整道题的List
 
 
-        for(int j=1;j<=3;j++) //遍历题序
+        for(int j=1;j<=questionNodes.size();j++) //遍历题序
         {
             for (int i = 0; i < questionNodes.size(); i++)
             {

@@ -1,10 +1,13 @@
 package com.se.se_part.Service.Impl;
 
+import com.alibaba.druid.util.StringUtils;
 import com.se.se_part.Dao.*;
 import com.se.se_part.Entity.*;
 import com.se.se_part.Service.AdminService;
 import com.se.se_part.Service.UserService;
+import com.se.se_part.Utils.JwtHelper;
 import com.se.se_part.Utils.Result;
+import com.se.se_part.Utils.ResultCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +26,87 @@ public class AdminServiceImpl implements AdminService
     @Autowired
     private QuestionnaireCoreRepository questionnaireCoreRepository;
     @Autowired
+    private QuestionNodeRepository questionNodeRepository;
+    @Autowired
     private AnswerNodeRepository answerNodeRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private AdministratorRepository adminRepository;
+    @Autowired
+    private JwtHelper jwtHelper;
+
+    @Override
+    public Result adminlogin(Administrator adminForLogin)
+    {
+        Administrator loginAdmin = new Administrator();
+        loginAdmin = adminRepository.FindByAdminAccount(adminForLogin.getAccount());
+        if(loginAdmin == null) //如果数据库中没有这个账号
+        {
+            return Result.build(null, ResultCodeEnum.USERNAME_ERROR);
+        }
+        if(!StringUtils.isEmpty(loginAdmin.getPassword()) && loginAdmin.getPassword().equals(adminForLogin.getPassword()))
+        {
+            String token = jwtHelper.createToken(Long.valueOf(loginAdmin.getId()));
+            Map data=new HashMap();
+            data.put("token",token);
+            return Result.ok(data);
+        }
+        return Result.build(null,ResultCodeEnum.PASSWORD_ERROR);
+    }
+
+    @Override
+    public Result getWholeFormDetails(Long targetFormId)
+    {
+        List<QuestionNode> questionNodes = questionNodeRepository.getQuestionNodeByCoreId(targetFormId); //通过问卷中心节点id找到整个问卷的所有题目
+        List<Questionnaire> questionnaires = new ArrayList<>(); //用于打包整道题的List
+
+        for(int i=0;i<questionNodes.size();i++)
+        {
+            Questionnaire questionnaire = new Questionnaire();
+            questionnaire.setType(questionNodes.get(i).getType()); //获取第i道题的type
+            questionnaire.setQuestionTitle(questionNodes.get(i).getTitle()); //获取第i道题的title
+
+            List<String> questionContents =new ArrayList<>(); //用于打包某道题的所有选项的List
+            if(questionNodes.get(i).getQ1() != "")
+            {
+                questionContents.add(questionNodes.get(i).getQ1());
+            }
+            if(questionNodes.get(i).getQ2() != "")
+            {
+                questionContents.add(questionNodes.get(i).getQ2());
+            }
+            if(questionNodes.get(i).getQ3() != "")
+            {
+                questionContents.add(questionNodes.get(i).getQ3());
+            }
+            if(questionNodes.get(i).getQ4() != "")
+            {
+                questionContents.add(questionNodes.get(i).getQ4());
+            }
+            if(questionNodes.get(i).getQ5() != "")
+            {
+                questionContents.add(questionNodes.get(i).getQ5());
+            }
+            if(questionNodes.get(i).getQ6() != "")
+            {
+                questionContents.add(questionNodes.get(i).getQ6());
+            }
+            if(questionNodes.get(i).getQ7() != "")
+            {
+                questionContents.add(questionNodes.get(i).getQ7());
+            }
+            if(questionNodes.get(i).getQ8() != "")
+            {
+                questionContents.add(questionNodes.get(i).getQ8());
+            }
+            questionnaire.setQuestionContent(questionContents); //获取第i道题的内容
+
+            questionnaires.add(questionnaire);
+        }
+        return Result.ok(questionnaires);
+    }
+
     @Override
     public Result getAllUsers()
     {
@@ -121,6 +202,8 @@ public class AdminServiceImpl implements AdminService
         }
         return Result.ok(answersList);
     }
+
+
 
 
 }

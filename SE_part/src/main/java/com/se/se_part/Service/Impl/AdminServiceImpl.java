@@ -108,6 +108,18 @@ public class AdminServiceImpl implements AdminService
     }
 
     @Override
+    public Result adminDeleteForm(Long questionnaireCoreId)
+    {
+        List<QuestionNode> questionNodes = questionNodeRepository.getQuestionNodeByCoreId(questionnaireCoreId);
+        for(int i=0;i<questionNodes.size();i++)
+        {
+            questionNodeRepository.deleteQuestionNode(questionNodes.get(i).getId());
+        }
+        questionnaireCoreRepository.deleteQuestionCore(questionnaireCoreId);
+        return Result.ok(null);
+    }
+
+    @Override
     public Result getAllUsers()
     {
         List<User> allUsers = userRepository.adminGetAllUsers();
@@ -176,7 +188,7 @@ public class AdminServiceImpl implements AdminService
         {
             return Result.ok(null);
         }
-        return null;
+        return Result.ok(null);
     }
 
     @Override

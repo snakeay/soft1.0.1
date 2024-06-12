@@ -123,4 +123,11 @@ public class AdminController
         return result;
     }
 
+    @PostMapping("/adminDeleteForm")
+    public Result adminDeleteForm(@RequestParam("questionnaireCoreId") Long questionnaireCoreId)
+    {
+        Result result = adminService.adminDeleteForm(questionnaireCoreId);
+        return result;
+    }
+
 }

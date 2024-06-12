@@ -247,9 +247,9 @@ public class Neo4jSpringBootApplicationTests {
         Q1.setType(0);
         Q2.setType(1);
         Q3.setType(2);
-        Q1.setQuestionTitle("姓名：");
-        Q2.setQuestionTitle("年龄：");
-        Q3.setQuestionTitle("您的家庭住址是：");
+        Q1.setQuestionTitle("您的姓名是什么");
+        Q2.setQuestionTitle("您的年龄是多少");
+        Q3.setQuestionTitle("您的联系方式是多少");
 //        list2.add("选项A的内容");
 //        list2.add("选项B的内容");
 //        list2.add("选项C的内容");
@@ -427,4 +427,13 @@ public class Neo4jSpringBootApplicationTests {
     {
         userService.dataModeling(40L,44L);
     }
+
+    @Test
+    public void testadminDeleteForm()
+    {
+        Long questionnaireCoreId = 50L;
+        adminController.adminDeleteForm(questionnaireCoreId);
+    }
+
+
 }

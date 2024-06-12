@@ -21,4 +21,7 @@ public interface QuestionNodeRepository extends Neo4jRepository<QuestionNode,Lon
     @Query("match(a)-[r:questionBelongsTo]->(b) where id(b)=$coreId and a.title = $title return a.number")
     int getNumberByTitle(Long coreId, String title);
 
+    //管理员通过QuestionNodeId删除节点
+    @Query("match(n:QuestionNode) where id(n)=$questionNodeId detach delete n")
+    void deleteQuestionNode(Long questionNodeId);
 }

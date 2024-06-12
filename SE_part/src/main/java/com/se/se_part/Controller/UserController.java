@@ -3,6 +3,7 @@ package com.se.se_part.Controller;
 import com.se.se_part.Entity.Answers;
 import com.se.se_part.Entity.Questionnaire;
 import com.se.se_part.Entity.User;
+import com.se.se_part.Service.AdminService;
 import com.se.se_part.Utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,8 @@ import static com.se.se_part.Main.userUid;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private AdminService adminService;
     @PostMapping("/login") // @RequestParam("account")String account, @RequestParam("password")String password
     public Result login(@RequestBody User user)
     {
@@ -89,14 +92,14 @@ public class UserController {
     }
 
     @PostMapping("/getAllAnswerFormIdAndFiller") //用户查询其所创建的某一个问卷的所有答案卷
-    public Result getAllAnswerFormIdAndFiller(@RequestBody Long questionCoreId)
+    public Result getAllAnswerFormIdAndFiller(@RequestParam("questionCoreId") Long questionCoreId)
     {
         Result result = userService.getAllAnswerFormIdAndFiller(questionCoreId);
         return result;
     }
 
     @PostMapping("/getAnswerFormDetails")
-    public Result getAnswerFormDetails(@RequestBody String token, @RequestBody Long questionCoreId)
+    public Result getAnswerFormDetails(@RequestHeader String token, @RequestParam("questionCoreId") Long questionCoreId)
     {
         Result result = userService.getAnswerFormDetails(token,questionCoreId);
         return result;
@@ -137,6 +140,13 @@ public class UserController {
         return result;
     }
 
+    @PostMapping("/userDeleteForm")
+    public Result userDeleteForm(@RequestParam("questionnaireCoreId") Long questionnaireCoreId)
+    {
+        Result result = adminService.adminDeleteForm(questionnaireCoreId);
+        return result;
+    }
+
     @GetMapping("/test")
     public void test(@RequestBody List<Questionnaire> questionnaires,@RequestBody String questionnaireTitle,@RequestBody String token,@RequestBody List<Long> targetGroupIds)
     {
@@ -155,6 +165,7 @@ public class UserController {
     {
         System.out.println(targetGroupIds);
     }
+
 
 
 }

@@ -37,5 +37,7 @@ public interface QuestionnaireCoreRepository extends Neo4jRepository<Questionnai
     @Query("match(n:QuestionnaireCore) return n")
     List<QuestionnaireCore> adminGetAllQuesionnaires();
 
-
+    //管理员通过id删除问题卷中心节点
+    @Query("match(n:QuestionnaireCore) where id(n)=$questionnaireCoreId detach delete n")
+    void deleteQuestionCore(Long questionnaireCoreId);
 }

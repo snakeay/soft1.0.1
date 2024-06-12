@@ -29,4 +29,6 @@ public interface AdminService {
     Result adminlogin(Administrator adminForLogin);
 
     Result getWholeFormDetails(Long questionnaireCoreId);
+
+    Result adminDeleteForm(Long questionnaireCoreId);
 }

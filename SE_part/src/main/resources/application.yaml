@@ -3,12 +3,12 @@ spring:
   neo4j:
     authentication:
       username: neo4j
-      password: 12345678
+      password: 123456789
     uri: bolt://localhost:7687
 
 
 server:
-  port: 8090
+  port: 8080
 
 #jwt配置
 jwt:

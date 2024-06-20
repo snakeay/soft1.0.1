@@ -22,5 +22,5 @@ public class User implements Serializable {
     @Property
     private String password; //密码
     @Property
-    private String nickname; //姓名
+    private String nickname; //昵称
 }
